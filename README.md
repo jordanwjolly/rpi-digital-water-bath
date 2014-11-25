@@ -54,13 +54,13 @@ The sensors use only two Python scripts, also running simultaneously:
 * <code>sensor.py</code> which reads from the DS18B20 Digital temperature sensor
 * <code>temppusher.py</code> which updates its corresponding row in the **sensors** table of the remote database.
 
-## Contributors
+# Contributors
 
 I'm really not too great with the whole open source thing, but feel free to add issues, pull requests, all that jazz.
 
 Once again, I apologize how sloppy all of this is.
 
-## License
+# License
 
 The MIT License (MIT)
 
