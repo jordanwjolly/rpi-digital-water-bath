@@ -22,6 +22,29 @@ In addition to the [Raspberry Pi's](https://www.adafruit.com/products/1914) ($40
 * [DS18B20 Digital temperature sensor](http://www.adafruit.com/product/374) for the temperature sensor Pi's ($3.95 each)
 * Necessary jumper wires to connect everything 
 
+
+# HVAC 101
+
+HVAC (heating, ventilating, and air conditioning) can be implemented in different ways within a house or apartment, and varies for different countries based on the wiring and such. I'm not an expert in HVAC systems, I pretty much just learned enough to get by for this project, but here's a pretty useful guide: [http://wiki.xtronics.com/index.php/Thermostat_signals_and_wiring](http://wiki.xtronics.com/index.php/Thermostat_signals_and_wiring)
+
+My particular apartment uses a heat pump, which uses the very same compressor action for the air conditioner. The only difference is the air flow. This makes it possible to, in my case, use four wires from the HVAC panel behind the original thermostat for this project:
+
+* **R (Red)**: This is the "common" wire, meaning that a circuit is completed when any of the other wires are connected to this one, hence the relay module.
+* **G (Green)**: This is the signal for the fan, which becomes activated when connected to **R**.
+* **Y (Yellow)**: This is the signal for the compressor. By default, the air flow is set to blow heat into the apartment.
+* **O (Orange)**: This is the signal to reverse the air flow from the compressor. With **Y** and **O** both active, the flow changes to blow cool air into the apartment.
+
+I broke this down to a pretty simple formula while I started writing the software for the controller:
+
+**R** + **G** = Fan<br/>
+**R** + **G** + **Y** = Heater<br/>
+**R** + **G** + **Y** + **O** = Air conditioner
+
+It's also very important to note that the wires coming out of my HVAC use a low voltage at 24V, not mains power. With a relay module completing the circuits, it should still work with mains electricity, but _**it is very dangerous and you should NOT mess with mains power unless you know exactly what you're doing! An accident involving high voltage and current can very easily kill you.**_
+
+If your home HVAC does not use a compressor heat pump or for another reason you cannot use the same setup I'm using, you will have to do some research and potentially adjust the <code>hvaccontroller.py</code> script accordingly.
+
+
 # Installation
 
 ### Web interface
@@ -46,13 +69,32 @@ The HVAC controller uses three Python scripts, running simultaneously:
 
 There is also a <code>hvaccontroller_cleanup.py</code> script which should be run in the event of the Raspberry Pi shutting down, just to ensure the relays all turn off.
 
+If you've ever used the SainSmart relay module with a Raspberry Pi before, then wiring the relay to the Pi should be trivial. If not, I recommend watching [this video](https://www.youtube.com/watch?v=oaf_zQcrg7g). If you look at the top of the <code>hvaccontrol.py</code> script, you can see which pins are used for the relay:
+
+   GPIO Pin     |       HVAC       | Relay Input 
+--------------- | ---------------- | ----------- 
+17 (BCM)        | G (Fan)          | IN 1
+27 (BCM)        | Y (Compressor)   | IN 2
+22 (BCM)        | O (Flow reverse) | IN 3
+1 (Board 3.3v)  | --               | VCC IN
+6 (Board Gnd)   | --               | GND
+
+![Relay module](https://i.imgur.com/Ktlb2CL.png)
+![Raspberry Pi GPIO](https://i.imgur.com/RVW04Mq.png)
+
 ### Temperature Sensor Pi
 
 The files for the temperature sensors are in the **Sensor** directory. Similarly to the HVAC controller Pi, the temperature sensor Pi's require the placeholders to be changed to their proper values based on your database and file structures.
 
 The sensors use only two Python scripts, also running simultaneously:
+
 * <code>sensor.py</code> which reads from the DS18B20 Digital temperature sensor
 * <code>temppusher.py</code> which updates its corresponding row in the **sensors** table of the remote database.
+
+Installing the hardware for the sensor Pi is relatively simple, but does require a 4.7 kOhm resistor for safe usage of the DS18B20 sensor component. I used Adafruit's [DS18B20 component installation walkthrough](https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing/hardware) to figure out how to wire the Pi to the sensor.
+
+Please ensure that the data pin on the DS18B20 is connected to pin 4 (BCM mode) of the Pi's GPIO, as shown in Adafruit's instructions.
+
 
 # Contributors
 
