@@ -177,11 +177,11 @@
 		function checkResponsiveTime(lastUpdateTime) {
 			var time = Math.round(new Date().getTime() / 1000);
 			var errorCode = 'old_status';
-			if(currentError === null && (lastUpdateTime + <?php echo WARNING_TIME_SEC; ?>) < lastUpdateTime) {
+			if(currentError === null && (lastUpdateTime + <?php echo WARNING_TIME_SEC; ?>) < time) {
 				currentError = errorCode;
 				showWarning('Status has not been updated, controller may be offline.');
 			}
-			else if(currentError == errorCode && !((lastUpdateTime + <?php echo WARNING_TIME_SEC; ?>) < lastUpdateTime)) {
+			else if(currentError == errorCode && !((lastUpdateTime + <?php echo WARNING_TIME_SEC; ?>) < time)) {
 				currentError = null;
 				hideWarning();
 			}
