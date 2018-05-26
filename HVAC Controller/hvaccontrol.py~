@@ -395,7 +395,6 @@ def checkClimate(setTemperature, threshold):
 	global heatingOn;
 	global coolingOn;	
 	global lastCoolerEnableTime;
-	global lastHeaterEnableTime;
 	
 	# This function is called if the compressor is in heat, cool or auto mode.
 	# First check the current temperature, set temperature, and threshold.
