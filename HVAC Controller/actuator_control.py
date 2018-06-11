@@ -243,23 +243,4 @@ def checkClimate(threshold, setTemp):
 			setCooling(False);
 		setHeating(True);
 
-# Main #################################################################################################################
-########################################################################################################################
 
-setupGPIO(); # Setting up GPIO
-
-# Resetting fan and compressor times
-lastCoolerDisableTime = 0;
-
-global setTemp
-setTemp=26
-
-for t in range(0, 1000):
-	setTemp = 20+t
-	checkClimate(0.1, setTemp)
-	setTemp=setTemp 
-	
-
-	time.sleep(1)
-
-goodbye();

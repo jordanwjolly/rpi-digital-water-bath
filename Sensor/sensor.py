@@ -8,8 +8,8 @@ import json;
 os.system('modprobe w1-gpio');
 os.system('modprobe w1-therm');
 
-READ_DELAY = 0.5;
-AVERAGE_COUNT = 3;
+READ_DELAY = 0.1;
+AVERAGE_COUNT = 4;
 
 BASE_DIR = '/sys/bus/w1/devices/';
 

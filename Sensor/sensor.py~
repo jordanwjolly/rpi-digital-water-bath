@@ -8,8 +8,8 @@ import json;
 os.system('modprobe w1-gpio');
 os.system('modprobe w1-therm');
 
-READ_DELAY = 0.5;
-AVERAGE_COUNT = 3;
+READ_DELAY = 0.1;
+AVERAGE_COUNT = 5;
 
 BASE_DIR = '/sys/bus/w1/devices/';
 
@@ -85,5 +85,5 @@ while (True):
 		continue;
 	
 	write_current(avg_temp);
-	print('({:d}) {:1.3f} F'.format(int(time.time()), avg_temp));
+	print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp));
 	time.sleep(READ_DELAY);
