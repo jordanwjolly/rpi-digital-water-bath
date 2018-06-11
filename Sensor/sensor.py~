@@ -85,5 +85,5 @@ while (True):
 		continue;
 	
 	write_current(avg_temp);
-	print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp));
+	print('({:d}) {:1.3f} F'.format(int(time.time()), avg_temp));
 	time.sleep(READ_DELAY);
