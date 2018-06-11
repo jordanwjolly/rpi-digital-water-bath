@@ -1,9 +1,5 @@
 #!/usr/bin/python
 
-#NOTES: The state machine is a little bit wack. Currently correctly identifies cold/hot incorrectly, but then actuates correctly according to the wrong 
-#						Identification. There is a bunch of things going weird with the t-1 t0 logic, i reckon simplify the 
-
-
 # Imports ##############################################################################################################
 ########################################################################################################################
 
@@ -18,18 +14,19 @@ import time;			# Time functions
 DIR = '/home/pi/RaspberryPiThermostat'
 CURRENT_FILE = DIR+'/current.json'
 
-# Relay boolean constants. Flipped for Sainsmart relay module.
+# Relay boolean constants. 
 RELAY_ON = False;
 RELAY_OFF = (not RELAY_ON);
 
 TOGGLE_DELAY = 1;
 COOLER_RECOVERY_TIME = 60;
-HEATER_RECOVERY_TIME = 60;
+HEATER_RECOVERY_TIME = 10; #Time out between turning it off/on again
+TEMP_THRESHOLD = 0.1; #Allowable difference in measured temp vs desired temp
 
 # Relay pins
 BOARD_MODE = gpio.BOARD;	# The GPIO board mode setting
 PIN_HEAT = 38;	# Pin for heat unit.
-PIN_COOL = 40;		# Pin for "blow direction". On = Cool, Off = Heat.
+PIN_COOL = 40;		# Pin for "cooler
 
 VER = '0.1';
 VERBOSE = True;
@@ -55,7 +52,7 @@ def goodbye():
 	
 def cleanup():
 	print('Running cleanup script...');
-	setCooling(False, True);
+	#setCooling(False, True);
 	setHeating(False, True);
 	print('Cleanup complete.');
 	
@@ -182,7 +179,6 @@ def setupGPIO():
 	print('\nGPIO setup complete\n****************************************');
 
 def getcurrTemp():
-	global currTemp;
 	global CURRENT_FILE;
 	#Gets sensor value, returns current temperature
 	print("\nReading current temperature")		
@@ -193,22 +189,19 @@ def getcurrTemp():
         #return (data['date'], data['temperature']);
 	currTemp = data['temperature']
 	print("Current Temperature is: " + str(currTemp))
-	return 
+	return currTemp 
 
-def checkClimate(threshold):
-	global currTemp;
-	global setTempNow
-	global setTempLast
+def checkClimate(threshold, setTemp):
 	global heatingOn;
 	global coolingOn;	
 	global lastCoolerEnableTime;
 	global lastHeaterEnableTime;
 	
-	getcurrTemp()
-	print("Set-point Temperature is: " + str(setTempNow))
+	currTemp = getcurrTemp()
+	print("Set-point Temperature is: " + str(setTemp))
 	
-	if(threshold < 0.5):
-		threshold = 0.5;
+	if(threshold < TEMP_THRESHOLD ):
+		threshold = TEMP_THRESHOLD ;
 		print('*** Warning: Threshold too low. Setting to 0.5.');
 	
 	hotterThanSet = False;
@@ -216,16 +209,16 @@ def checkClimate(threshold):
 	
 	# CHECKING TO SEE IF TEMP IS ABOVE/BELOW SET POINT
 	# COOLER: Cooler is on, it should stay on until it goes past the threshold
-	if(coolingOn and (setTempNow< (currTemp+threshold))):
+	if(coolingOn and (setTemp< (currTemp+threshold))):
 		hotterThanSet = True;
 	# COOLER: Cooler is currently off, it should turn on when it hits the threshold
-	if((not coolingOn) and (setTempNow< (currTemp-threshold))):
+	if((not coolingOn) and (setTemp< (currTemp-threshold))):
 		hotterThanSet = True;
 	# HEATER: Heater is on, it should stay on until it goes past the threshold
-	if(heatingOn and (setTempNow> (currTemp-threshold))):
+	if(heatingOn and (setTemp> (currTemp-threshold))):
 		coolerThanSet = True;
 	# HEATER: Heater is currently off, it should turn on when it hits the threshold
-	if((not heatingOn) and (setTempNow> (currTemp+threshold))):
+	if((not heatingOn) and (setTemp> (currTemp+threshold))):
 		coolerThanSet = True;
 
 	# TURN THE HEATER/COOLER ON/OFF
@@ -258,13 +251,15 @@ setupGPIO(); # Setting up GPIO
 # Resetting fan and compressor times
 lastCoolerDisableTime = 0;
 
-global setTempNow
-setTempNow=27
-while(True):
+global setTemp
+setTemp=26
 
-	checkClimate(0.5)
-	time.sleep(5)
+for t in range(0, 1000):
+	setTemp = 20+t
+	checkClimate(0.1, setTemp)
+	setTemp=setTemp 
+	
 
-
+	time.sleep(1)
 
 goodbye();
