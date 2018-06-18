@@ -108,17 +108,17 @@ def setCooling(toggle, force=False):
 
 #TURNS ON THE HEATER
 def setHeating(toggle, force=False):
-	global RELAY_ON;
-	global RELAY_OFF;
-	global PIN_FAN;
-	global PIN_HEAT;
-	global PIN_COOL;
-	global fanOn;
-	global coolingOn;
-	global heatingOn;
-	global lastHeaterEnableTime;
-	global lastHeaterDisableTime;
-	global HEATER_RECOVERY_TIME;
+	global RELAY_ON
+	global RELAY_OFF
+	global PIN_FAN
+	global PIN_HEAT
+	global PIN_COOL
+	global fanOn
+	global coolingOn
+	global heatingOn
+	global lastHeaterEnableTime
+	global lastHeaterDisableTime
+	global HEATER_RECOVERY_TIME
 	
 	if((not force) and (toggle == heatingOn)):
 		print('*** Heating stays on***');
@@ -129,59 +129,59 @@ def setHeating(toggle, force=False):
 		
 		# Cannot enable heating if A/C is on
 		if(coolingOn):
-			print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***');
-			return;
+			print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***')
+			return
 		
 		if(int(time.time()) < (lastHeaterDisableTime + HEATER_RECOVERY_TIME)):
-			print('*** Cannot enable heating, heater in recovery ***');
+			print('*** Cannot enable heating, heater in recovery ***')
 			return;
 		
-		print('Enabling heating...');
-		gpio.output(PIN_HEAT, RELAY_ON);
-		lastHeaterEnableTime = int(time.time());
-		heatingOn = True;
-		print('*** Heating enabled ***');
+		print('Enabling heating...')
+		gpio.output(PIN_HEAT, RELAY_ON)
+		lastHeaterEnableTime = int(time.time())
+		heatingOn = True
+		print('*** Heating enabled ***')
 		
 	else:
-		print('Disabling heating...');
-		gpio.output(PIN_HEAT, RELAY_OFF);
+		print('Disabling heating...')
+		gpio.output(PIN_HEAT, RELAY_OFF)
 		
 		if(heatingOn):
-			lastHeaterDisableTime = int(time.time());
+			lastHeaterDisableTime = int(time.time())
 			
 		heatingOn = False;
-		print('*** Heating disabled ***');
+		print('*** Heating disabled ***')
 		
 	delay();
 
 def setupGPIO():
-	global BOARD_MODE;
-	global PIN_HEAT;
-	global PIN_COOL;
+	global BOARD_MODE
+	global PIN_HEAT
+	global PIN_COOL
 	
-	print('\nSetting up GPIO... \n');
-	gpio.setwarnings(False);
+	print('\nSetting up GPIO... \n')
+	gpio.setwarnings(False)
 	
 	# Setting board mode.
-	gpio.setmode(BOARD_MODE);
+	gpio.setmode(BOARD_MODE)
 	
 	# Setting up output pins
-	gpio.setup(PIN_HEAT,	gpio.OUT);
-	gpio.setup(PIN_COOL,		gpio.OUT);
+	gpio.setup(PIN_HEAT,	gpio.OUT)
+	gpio.setup(PIN_COOL,		gpio.OUT)
 	
-	gpio.output(PIN_HEAT, RELAY_OFF);
-	gpio.output(PIN_COOL, RELAY_OFF);
+	gpio.output(PIN_HEAT, RELAY_OFF)
+	gpio.output(PIN_COOL, RELAY_OFF)
 	
 	print("Initially turn all systems off....\n")
-	#setCooling(False, True);
-	setHeating(False, True);
-	
+	#setCooling(False, True)
+	setHeating(False, True)
+
 	print('\nGPIO setup complete\n****************************************');
 
-def getcurrTemp():
-	global CURRENT_FILE;
+def currTemp():
+	global CURRENT_FILE
 	#Gets sensor value, returns current temperature
-	print("\nReading current temperature")		
+	print("\nReading current temperature")
         s = None;
         with open(CURRENT_FILE) as file:
                 s = file.read();
@@ -189,20 +189,19 @@ def getcurrTemp():
         #return (data['date'], data['temperature']);
 	currTemp = data['temperature']
 	print("Current Temperature is: " + str(currTemp))
-	return currTemp 
+	return currTemp
 
-def checkClimate(threshold, setTemp):
-	global heatingOn;
-	global coolingOn;	
-	global lastCoolerEnableTime;
-	global lastHeaterEnableTime;
-	
-	currTemp = getcurrTemp()
+def checkClimate(threshold, setTemp, currTemp):
+	global heatingOn
+	global coolingOn
+	global lastCoolerEnableTime
+	global lastHeaterEnableTime
+
 	print("Set-point Temperature is: " + str(setTemp))
 	
 	if(threshold < TEMP_THRESHOLD ):
-		threshold = TEMP_THRESHOLD ;
-		print('*** Warning: Threshold too low. Setting to 0.5.');
+		threshold = TEMP_THRESHOLD
+		print('*** Warning: Threshold too low. Setting to 0.5.')
 	
 	hotterThanSet = False;
 	coolerThanSet = False;

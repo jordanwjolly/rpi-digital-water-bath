@@ -9,7 +9,7 @@ os.system('modprobe w1-gpio');
 os.system('modprobe w1-therm');
 
 READ_DELAY = 0.1;
-AVERAGE_COUNT = 5;
+AVERAGE_COUNT = 4;
 
 BASE_DIR = '/sys/bus/w1/devices/';
 
@@ -43,16 +43,16 @@ def read_temp(device_file):
 	return (temp_c, temp_f);
 
 def get_average_temp(device_file):
-	global AVERAGE_COUNT;
+	global AVERAGE_COUNT
 	
-	total_c = 0;
+	total_c = 0
 	for i in range(0,AVERAGE_COUNT):
-		temp_c, temp_f = read_temp(device_file);
-		total_c += temp_c;
-	return total_c/AVERAGE_COUNT;
+		temp_c, temp_f = read_temp(device_file)
+		total_c += temp_c
+	return total_c/AVERAGE_COUNT
 
 def write_current(temp):
-	global CURRENT_FILE;	
+	global CURRENT_FILE
 
 	s = json.dumps({"temperature":temp, 'date':int(time.time())});
 	with open(CURRENT_FILE, 'w') as file:
