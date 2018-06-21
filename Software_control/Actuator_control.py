@@ -11,7 +11,7 @@ import time;			# Time functions
 # Constants ############################################################################################################
 ########################################################################################################################
 #Save path of current temperature
-DIR = '/home/pi/RaspberryPiThermostat'
+DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
 CURRENT_FILE = DIR+'/current.json'
 
 # Relay boolean constants. 
@@ -178,8 +178,7 @@ def setupGPIO():
 
 	print('\nGPIO setup complete\n****************************************');
 
-def currTemp():
-	global CURRENT_FILE
+def currTemp(CURRENT_FILE):
 	#Gets sensor value, returns current temperature
 	print("\nReading current temperature")
         s = None;
@@ -235,6 +234,8 @@ def checkClimate(threshold, setTemp, currTemp):
 		if(heatingOn):
 			setHeating(False);
 		#setCooling(True);
+		else:
+			print("*** Heating is off ***")
 
 	elif(coolerThanSet):
 		print('Water temperature is too cold');
