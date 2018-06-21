@@ -1,20 +1,21 @@
 #import matplotlib.pyplot as plt
-#import csv
+import csv
+import os.path
 
-def SaveCurrentValues(setTemp, currTemp):
-	return 0
-#    >> > with open('eggs.csv', 'rb') as csvfile:
- #       ...
-  #      spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-   # ...
-   # for row in spamreader:
-    #    ...
-     #   print ', '.join(row)
+def SaveCurrentValues(setTemp, currTemp, MY_FILE):	
+	fields=[setTemp,currTemp]
+	with open(MY_FILE, 'a+') as f:
+    		writer = csv.writer(f)
+    		writer.writerow(fields)
+
+def updateGraph(setTemp, currTemp, MY_FILE):
+	#First save the current values
+	SaveCurrentValues(setTemp, currTemp, MY_FILE)
+   
 
 
-def updateGraph(setTemp, currTemp):
-	return 0
-    #myfile="/Users/Jord/Documents/PycharmProjects/RaspberryPiThermostat/data.csv"
+
+ #myfile="/Users/Jord/Documents/PycharmProjects/RaspberryPiThermostat/data.csv"
 
 
 
