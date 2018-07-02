@@ -33,7 +33,7 @@ for t in range(0, RUNTIME*60*60):
 	currTemp = Actuator_control.currTemp(CURRENT_TEMP_FILE)
 
 	# Does all of the stuff
-	Actuator_control.checkClimate(ERROR_TOLERANCE, setTemp, currTemp) #first number is allowable temp diff. Second number is set temp
+	Actuator_control.checkClimate(ERROR_TOLERANCE, setTemp, currTemp, DIR) #first number is allowable temp diff. Second number is set temp
 
 	# Update graph
 	if (GRAPH_SHOW): 

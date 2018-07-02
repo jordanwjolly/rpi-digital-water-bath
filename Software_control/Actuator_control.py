@@ -7,16 +7,13 @@ import os;			# OS functions
 import RPi.GPIO as gpio;	# GPIO library
 import json;			# JSON library
 import time;			# Time functions
+import subprocess
 
 # Constants ############################################################################################################
 ########################################################################################################################
 #Save path of current temperature
 DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
 CURRENT_FILE = DIR+'/current.json'
-
-# Relay boolean constants. 
-RELAY_ON = False;
-RELAY_OFF = (not RELAY_ON);
 
 TOGGLE_DELAY = 1;
 COOLER_RECOVERY_TIME = 60;
@@ -62,10 +59,6 @@ def delay():
 
 #TURNS ON THE COOLER
 def setCooling(toggle, force=False):
-	global RELAY_ON;
-	global RELAY_OFF;
-	global PIN_HEAT;
-	global PIN_COOL;
 	global coolingOn;
 	global heatingOn;
 	global lastCoolerDisableTime;
@@ -89,14 +82,14 @@ def setCooling(toggle, force=False):
 			return;
 		
 		print('Enabling cooling...');
-		gpio.output(PIN_COOL, RELAY_ON);
+		gpio.output(PIN_COOL, True);
 		coolingOn = True;		
 		lastCoolerEnableTime = int(time.time());
 		print('*** Cooling enabled ***');
 		
 	else:
 		print('Disabling cooling...');
-		gpio.output(PIN_COOL, RELAY_OFF);
+		gpio.output(PIN_COOL, False;
 		
 		if(coolingOn):
 			lastCoolerDisableTime = int(time.time());
@@ -107,20 +100,15 @@ def setCooling(toggle, force=False):
 	delay();
 
 #TURNS ON THE HEATER
-def setHeating(toggle, force=False):
-	global RELAY_ON
-	global RELAY_OFF
-	global PIN_FAN
-	global PIN_HEAT
-	global PIN_COOL
-	global fanOn
+def setHeating(toggle, DIR):
+
 	global coolingOn
 	global heatingOn
 	global lastHeaterEnableTime
 	global lastHeaterDisableTime
 	global HEATER_RECOVERY_TIME
 	
-	if((not force) and (toggle == heatingOn)):
+	if(toggle == heatingOn):
 		print('*** Heating stays on***');
 		return;
 	
@@ -137,14 +125,16 @@ def setHeating(toggle, force=False):
 			return;
 		
 		print('Enabling heating...')
-		gpio.output(PIN_HEAT, RELAY_ON)
+		gpio.output(PIN_HEAT, True)
+		subprocess.call(DIR + "/Hardware_control/WTI_on.sh")
 		lastHeaterEnableTime = int(time.time())
 		heatingOn = True
 		print('*** Heating enabled ***')
 		
 	else:
 		print('Disabling heating...')
-		gpio.output(PIN_HEAT, RELAY_OFF)
+		gpio.output(PIN_HEAT, False)
+		subprocess.call(DIR + "/Hardware_control/WTI_off.sh")  #Calls bash script to turn heating on
 		
 		if(heatingOn):
 			lastHeaterDisableTime = int(time.time())
@@ -190,7 +180,7 @@ def currTemp(CURRENT_FILE):
 	print("Current Temperature is: " + str(currTemp))
 	return currTemp
 
-def checkClimate(threshold, setTemp, currTemp):
+def checkClimate(threshold, setTemp, currTemp , DIR):
 	global heatingOn
 	global coolingOn
 	global lastCoolerEnableTime
