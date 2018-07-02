@@ -1,14 +1,19 @@
 #!/usr/bin/python
+# USE: 	This file runs the temperature profile curve. 
+#	
+#	To edit the curve, change the equation labeled below as "The Equation"
 
-# This file dictates what the heating profile looks like
-import os
-import time			# Time functions
+# LIBRARIES
+import os, time
 from Software_control import Actuator_control
 from Software_control import Graph_show
 
 # STATIC VARS
-ERROR_TOLERANCE = 0.1
+ERROR_TOLERANCE = 0.1	#Allowable temperature error tolerance
+RUNTIME = 1 		#Run time of experiment (Is specified in hours)
+GRAPH_SHOW= True	#Toggle True/False to show graphical output of temp profile
 
+# FILE PATH INFO
 DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
 CURRENT_TEMP_FILE = DIR+'/current.json'
 SENSOR_SCRIPT_FILE = DIR + '/Hardware_control/Temp_sensor.py'
@@ -19,7 +24,7 @@ GRAPH_FILE = DIR + '/Software_control/Graph_values.csv'
 Actuator_control.setupGPIO()
 
 # Range of time
-for t in range(0, 1000):
+for t in range(0, RUNTIME*60*60):
 
 	# The Equation
 	setTemp = 20+float(t)/2
@@ -31,7 +36,8 @@ for t in range(0, 1000):
 	Actuator_control.checkClimate(ERROR_TOLERANCE, setTemp, currTemp) #first number is allowable temp diff. Second number is set temp
 
 	# Update graph
-	Graph_show.updateGraph(setTemp, currTemp, GRAPH_FILE)
+	if (GRAPH_SHOW): 
+		Graph_show.updateGraph(setTemp, currTemp, GRAPH_FILE)
 	
 	# Sets delay between reading intervals (should be larger than 5 seconds)
 	time.sleep(5)
