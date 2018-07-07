@@ -215,13 +215,13 @@ def checkClimate(threshold, setTemp, currTemp , DIR):
 	
 	if((not hotterThanSet) and (not coolerThanSet)):
 		print('Temperature is in range, no actuation required');
-		setHeating(False, DIR);
+		setHeating(False);
 		#setCooling(False);
 	
 	elif(hotterThanSet):
 		print('Water temperature is too warm');
 		if(heatingOn):
-			setHeating(False, DIR);
+			setHeating(False);
 		#setCooling(True);
 		else:
 			print("*** Heating is off ***")
@@ -230,6 +230,6 @@ def checkClimate(threshold, setTemp, currTemp , DIR):
 		print('Water temperature is too cold');
 		if(coolingOn):
 			setCooling(False);
-		setHeating(True, DIR);
+		setHeating(True);
 
 
