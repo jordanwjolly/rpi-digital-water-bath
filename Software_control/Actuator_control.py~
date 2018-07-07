@@ -170,10 +170,10 @@ def setupGPIO():
 def currTemp(CURRENT_FILE):
 	#Gets sensor value, returns current temperature
 	print("\nReading current temperature")
-        s = None;
-        with open(CURRENT_FILE) as file:
-                s = file.read();
-        data = json.loads(s);
+	s = None
+	with open(CURRENT_FILE) as file:
+		s = file.read()
+		data = json.loads(s)
         #return (data['date'], data['temperature']);
 	currTemp = data['temperature']
 	print("Current Temperature is: " + str(currTemp))
@@ -215,13 +215,13 @@ def checkClimate(threshold, setTemp, currTemp , DIR):
 	
 	if((not hotterThanSet) and (not coolerThanSet)):
 		print('Temperature is in range, no actuation required');
-		setHeating(False);
+		setHeating(False, DIR);
 		#setCooling(False);
 	
 	elif(hotterThanSet):
 		print('Water temperature is too warm');
 		if(heatingOn):
-			setHeating(False);
+			setHeating(False, DIR);
 		#setCooling(True);
 		else:
 			print("*** Heating is off ***")
@@ -230,6 +230,6 @@ def checkClimate(threshold, setTemp, currTemp , DIR):
 		print('Water temperature is too cold');
 		if(coolingOn):
 			setCooling(False);
-		setHeating(True);
+		setHeating(True, DIR);
 
 

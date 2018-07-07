@@ -27,7 +27,7 @@ def updateGraph(setTemp, currTemp, MY_FILE):
 			set_temp.append(row[1])
 			curr_temp.append(row[2])
 	#plt.ion()
-	plt.hold(True)
+	pyplot.hold(True)
 	plt.plot(t,set_temp, 'bo')
 	plt.plot(t,curr_temp, 'go')
 	plt.xlabel('time')

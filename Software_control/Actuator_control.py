@@ -170,10 +170,10 @@ def setupGPIO():
 def currTemp(CURRENT_FILE):
 	#Gets sensor value, returns current temperature
 	print("\nReading current temperature")
-        s = None;
-        with open(CURRENT_FILE) as file:
-                s = file.read();
-        data = json.loads(s);
+	s = None
+	with open(CURRENT_FILE) as file:
+		s = file.read()
+		data = json.loads(s)
         #return (data['date'], data['temperature']);
 	currTemp = data['temperature']
 	print("Current Temperature is: " + str(currTemp))

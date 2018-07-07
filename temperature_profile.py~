@@ -28,7 +28,7 @@ Actuator_control.setupGPIO()
 for t in range(0, RUNTIME*60*60):
 
 	# The Equation
-	setTemp = 22+2*cos(float(t)/2) #temperature
+	setTemp = 28+2*math.cos(float(t)/2) #temperature
 
 	# Get current Temperature
 	currTemp = Actuator_control.currTemp(CURRENT_TEMP_FILE)
