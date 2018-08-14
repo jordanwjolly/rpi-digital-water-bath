@@ -1,40 +1,56 @@
 #!/usr/bin/python
-# USE: 	This file runs the temperature profile curve. 
-#	
-#	To edit the curve, change the equation labeled below as "The Equation"
 
 # LIBRARIES
 import os, time, math
+import numpy as np
 from Software_control import Actuator_control
 from Software_control import Graph_show
 
-# STATIC VARS
-ERROR_TOLERANCE = 0.1	#Allowable temperature error tolerance
-RUNTIME = 1 		#Run time of experiment (Is specified in hours)
-GRAPH_SHOW= True	#Toggle True/False to show graphical output of temp profile
-TIME_STEP = 5 #seconds step
-
-
 # FILE PATH INFO
 DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
-CURRENT_TEMP_FILE = DIR+'/current.json'
+CURRENT_TEMP_FILE = DIR+'/Hardware_control/SensorValues.txt'
 SENSOR_SCRIPT_FILE = DIR + '/Hardware_control/Temp_sensor.py'
 GRAPH_FILE = DIR + '/Software_control/Graph_values.csv'
 
 # Sets up everything
 Actuator_control.setupGPIO()
+SetTemps = np.array([0,0,0,0,0,0,0,0], dtype=np.float) #Initiates an 1x8 array of NaNs
+SetTemps.fill(np.nan)
+CurrTemps=SetTemps
+
+############MAIN CODE#####################
+##########################################
+
+# Choose the variables
+ERROR_TOLERANCE = 0.1		#Allowable temperature error tolerance
+RUNTIME = 1 									#Run time of experiment (Is specified in hours)
+GRAPH_SHOW= False				#Toggle True/False to show graphical output of temp profile
+TIME_STEP = 5 								# Refresh rate of sensors
 
 # Range of time
 for t in range(0, RUNTIME*60*60):
 
-	# The Equation
-	setTemp = 28+2*math.cos(float(t)/2) #temperature
+	# The Equations for our eight water tanks.
+ 	# Uncomment for every tank in use
+	SetTemps[0] = 28+(float(t)/2) #temperature
+	SetTemps[1] = 28+(float(t)/2) #temperature
+	#SetTemps[2] = 28+(float(t)/2) #temperature
+	#SetTemps[3] = 28+(float(t)/2) #temperature
+	#SetTemps[4] = 28+(float(t)/2) #temperature
+	#SetTemps[5] = 28+(float(t)/2) #temperature
+	#SetTemps[6] = 28+(float(t)/2) #temperature
+	#SetTemps[7] = 28+(float(t)/2) #temperature
 
 	# Get current Temperature
-	currTemp = Actuator_control.currTemp(CURRENT_TEMP_FILE)
+	currTemps = Actuator_control.currTemp(CURRENT_TEMP_FILE)
+	
+	print("gg")
+	print(type(float(currTemps[0])))
 
 	# Does all of the stuff
-	Actuator_control.checkClimate(ERROR_TOLERANCE, setTemp, currTemp, DIR) #first number is allowable temp diff. Second number is set temp
+	#first number is allowable temp diff. Second number is set temp
+	Actuator_control.checkClimate(SetTemps[0], float(currTemps[0]), ERROR_TOLERANCE, DIR) 
+
 
 	# Update graph
 	if (GRAPH_SHOW): 

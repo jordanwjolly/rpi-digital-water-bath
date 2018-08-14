@@ -37,7 +37,7 @@ def read_temp(device_file):
 	lines = None;
 	equals_pos = -1;
 	while equals_pos < 0 or lines[0].strip()[-3:] != 'YES':
-		time.sleep(0.15);
+		time.sleep(0.05);
 		lines = read_temp_raw(device_file);
 		equals_pos = lines[1].find('t=');
 	temp_string = lines[1][equals_pos+2:];

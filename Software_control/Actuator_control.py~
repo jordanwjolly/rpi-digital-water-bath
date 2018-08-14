@@ -8,17 +8,19 @@ import RPi.GPIO as gpio;	# GPIO library
 import json;			# JSON library
 import time;			# Time functions
 import subprocess
+import pickle
+import numpy as np
 
 # Constants ############################################################################################################
 ########################################################################################################################
 #Save path of current temperature
 DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
-CURRENT_FILE = DIR+'/current.json'
+CURRENT_FILE = DIR+'/SensorValues.txt'
 
 TOGGLE_DELAY = 1;
 COOLER_RECOVERY_TIME = 60;
-HEATER_RECOVERY_TIME = 10; #Time out between turning it off/on again
-TEMP_THRESHOLD = 0.1; #Allowable difference in measured temp vs desired temp
+HEATER_RECOVERY_TIME = 10; 	#Time out between turning it off/on again
+TEMP_THRESHOLD = 0.1; 					#Allowable difference in measured temp vs desired temp
 
 # Relay pins
 BOARD_MODE = gpio.BOARD;	# The GPIO board mode setting
@@ -167,29 +169,41 @@ def setupGPIO():
 
 	print('\nGPIO setup complete\n****************************************');
 
-def currTemp(CURRENT_FILE):
+
+
+
+
+
+def currTemp(CURRENT_TEMP_FILE ):
 	#Gets sensor value, returns current temperature
 	print("\nReading current temperature")
-	s = None
-	with open(CURRENT_FILE) as file:
-		s = file.read()
-		data = json.loads(s)
+	#s = None
+	#with open(CURRENT_FILE) as file:
+		#s = file.read()
+		#data = json.loads(s)
         #return (data['date'], data['temperature']);
-	currTemp = data['temperature']
-	print("Current Temperature is: " + str(currTemp))
+	#currTemp = data['temperature']
+	currTemp= pickle.load(open(CURRENT_TEMP_FILE , 'r+b'))
+	print(currTemp)
 	return currTemp
 
-def checkClimate(threshold, setTemp, currTemp , DIR):
+
+
+
+
+
+def checkClimate(setTemp, currTemp , threshold, DIR):
 	global heatingOn
 	global coolingOn
 	global lastCoolerEnableTime
 	global lastHeaterEnableTime
 
 	print("Set-point Temperature is: " + str(setTemp))
+	print("Current Temperature is: " + str(currTemp))
 	
 	if(threshold < TEMP_THRESHOLD ):
 		threshold = TEMP_THRESHOLD
-		print('*** Warning: Threshold too low. Setting to 0.5.')
+		print('*** Warning: Threshold too low. Setting to 0.1.')
 	
 	hotterThanSet = False;
 	coolerThanSet = False;
