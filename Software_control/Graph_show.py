@@ -4,8 +4,12 @@ import os.path
 import matplotlib.pyplot as plt
 
 
-def SaveCurrentValues(setTemp, currTemp, MY_FILE):	
-	fields=[time.time(), setTemp,currTemp]
+def SaveCurrentValues(setTemps, currTemps, MY_FILE):	
+	fields=[time.time()]
+	fields.extend(setTemps)
+	fields.extend(currTemps)
+	#fields.extend(heatingOn)
+	print(fields)
 	with open(MY_FILE, 'a+') as f:
     		writer = csv.writer(f)
     		writer.writerow(fields)

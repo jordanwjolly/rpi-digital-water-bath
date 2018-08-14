@@ -20,7 +20,8 @@ CURRENT_FILE = DIR+'/SensorValues.txt'
 TOGGLE_DELAY = 1;
 COOLER_RECOVERY_TIME = 60;
 HEATER_RECOVERY_TIME = 10; 	#Time out between turning it off/on again
-TEMP_THRESHOLD = 0.1; 					#Allowable difference in measured temp vs desired temp
+TEMP_THRESHOLD = 0.05; 					#Allowable difference in measured temp vs desired temp
+HEAT_OVERSHOOT = 0.2;					#Compensation for 
 
 # Relay pins
 BOARD_MODE = gpio.BOARD;	# The GPIO board mode setting
@@ -180,8 +181,6 @@ def setupGPIO():
 def currTemp(CURRENT_TEMP_FILE ):
 
 	currTemp= pickle.load(open(CURRENT_TEMP_FILE , 'r'))	
-	currTemp[2]='20.0'
-	currTemp[3]='-4.0'
 	return currTemp
 
 
@@ -222,7 +221,8 @@ def checkClimate(setTemp, currTemp , threshold, DIR, relayID):
 
 	# TURN THE HEATER/COOLER ON/OFF
 	if(hotterThanSet and coolerThanSet):
-		#print('*** Error: Outside of both ranges somehow.');
+		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) )
+		print('*** Error: Outside of both ranges somehow.');
 		return;
 	
 	if((not hotterThanSet) and (not coolerThanSet)):

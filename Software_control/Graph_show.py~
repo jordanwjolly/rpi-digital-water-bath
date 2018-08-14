@@ -4,8 +4,12 @@ import os.path
 import matplotlib.pyplot as plt
 
 
-def SaveCurrentValues(setTemp, currTemp, MY_FILE):	
-	fields=[time.time(), setTemp,currTemp]
+def SaveCurrentValues(setTemps, currTemps, heatingOn, MY_FILE):	
+	fields=[time.time()]
+	fields.extend(setTemps)
+	fields.extend(currTemps)
+	fields.extend(heatingOn)
+	print(fields)
 	with open(MY_FILE, 'a+') as f:
     		writer = csv.writer(f)
     		writer.writerow(fields)
@@ -27,7 +31,7 @@ def updateGraph(setTemp, currTemp, MY_FILE):
 			set_temp.append(row[1])
 			curr_temp.append(row[2])
 	#plt.ion()
-	pyplot.hold(True)
+	plt.hold(True)
 	plt.plot(t,set_temp, 'bo')
 	plt.plot(t,curr_temp, 'go')
 	plt.xlabel('time')

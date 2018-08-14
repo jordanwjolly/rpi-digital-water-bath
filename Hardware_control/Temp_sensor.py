@@ -7,7 +7,16 @@ import pickle
 import numpy as np
 
 #CHANGE THIS
-sensorID=["28-000006dc6863","28-000006dc76f3"] #Sensor 1 for tank 1, is in the first place etc...
+s1="28-000006dc6863"
+s2="28-000006dc76f3"
+s3=None
+s4=None
+s5=None
+s6=None
+s7=None
+s8=None
+
+sensorID=[s1, s2, s3, s4, s5, s6, s7, s8] #Sensor 1 for tank 1, is in the first place etc...
 
 #DONT CHANGE ANYTHING ELSE
 sensorVAL = np.array([0,0,0,0,0,0,0,0], dtype=np.float) #Initiates an 1x8 array of NaNs
@@ -72,7 +81,8 @@ def write_current(temp):
 print('Finding sensor device file...\n');
 
 while(True):
-
+	
+	print("\n#######################################################")
 	for index, sensor in enumerate(sensorID):
 	
 		device_file = get_device_file(sensor);
