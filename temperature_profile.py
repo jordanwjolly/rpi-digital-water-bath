@@ -33,7 +33,7 @@ for t in range(0, RUNTIME*60*60):
 	# The Equations for our eight water tanks.
  	# Uncomment for every tank in use
 	SetTemps[0] = 28+(float(t)/2) #temperature
-	SetTemps[1] = 28+(float(t)/2) #temperature
+	SetTemps[1] = 28+(float(t)/20) #temperature
 	#SetTemps[2] = 28+(float(t)/2) #temperature
 	#SetTemps[3] = 28+(float(t)/2) #temperature
 	#SetTemps[4] = 28+(float(t)/2) #temperature
@@ -49,8 +49,8 @@ for t in range(0, RUNTIME*60*60):
 		if np.isnan(val):
 			continue
 		else:		
-			print('\nTesting Tank: ' + str(i+1))
-			Actuator_control.checkClimate(SetTemps[i], float(currTemps[i]), ERROR_TOLERANCE, DIR) 
+			relayID=i+1
+			Actuator_control.checkClimate(SetTemps[i], float(currTemps[i]), ERROR_TOLERANCE, DIR, relayID) 
 
 	# Update graph
 	if (GRAPH_SHOW): 

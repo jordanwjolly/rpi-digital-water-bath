@@ -102,7 +102,7 @@ def setCooling(toggle, force=False):
 	delay();
 
 #TURNS ON THE HEATER
-def setHeating(toggle, DIR):
+def setHeating(toggle, DIR, relayID):
 
 	global heatingOn
 	global lastHeaterEnableTime
@@ -127,7 +127,8 @@ def setHeating(toggle, DIR):
 		
 		#print('Enabling heating...')
 		gpio.output(PIN_HEAT, True)
-		subprocess.call(DIR + "/Hardware_control/WTI_on.sh")
+		subprocess.call([DIR + "/Hardware_control/WTI_on.sh", str(relayID)])
+		delay()
 		lastHeaterEnableTime = int(time.time())
 		heatingOn = True
 		print('*** Heating enabled ***')
@@ -135,7 +136,8 @@ def setHeating(toggle, DIR):
 	else:
 		#print('Disabling heating...')
 		gpio.output(PIN_HEAT, False)
-		subprocess.call(DIR + "/Hardware_control/WTI_off.sh")  #Calls bash script to turn heating on
+		subprocess.call([DIR + "/Hardware_control/WTI_off.sh", str(relayID)])  #Calls bash script to turn heating on
+		delay()
 		
 		if(heatingOn):
 			lastHeaterDisableTime = int(time.time())
@@ -165,7 +167,7 @@ def setupGPIO():
 	
 	print("Initially turn all systems off....\n")
 	#setCooling(False, True)
-	setHeating(False, True)
+	setHeating(False, True, 0)
 
 	print('\nGPIO setup complete\n****************************************');
 
@@ -191,7 +193,7 @@ def currTemp(CURRENT_TEMP_FILE ):
 
 
 
-def checkClimate(setTemp, currTemp , threshold, DIR):
+def checkClimate(setTemp, currTemp , threshold, DIR, relayID):
 	global heatingOn
 	global coolingOn
 	global lastCoolerEnableTime
@@ -199,6 +201,7 @@ def checkClimate(setTemp, currTemp , threshold, DIR):
 
 	#print("Set-point Temperature is: " + str(setTemp))
 	#print("Current Temperature is: " + str(currTemp))
+	print('\nTesting Tank: ' + str(relayID))
 	
 	if(threshold < TEMP_THRESHOLD ):
 		threshold = TEMP_THRESHOLD
@@ -229,7 +232,7 @@ def checkClimate(setTemp, currTemp , threshold, DIR):
 	if((not hotterThanSet) and (not coolerThanSet)):
 		#print('Temperature is in range, no actuation required');
 		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
-		setHeating(False, DIR);
+		setHeating(False, DIR, relayID);
 		
 		#setCooling(False);
 	
@@ -237,7 +240,7 @@ def checkClimate(setTemp, currTemp , threshold, DIR):
 		#print('Water temperature is too warm');
 		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
 		if(heatingOn):
-			setHeating(False, DIR);
+			setHeating(False, DIR, relayID);
 		#setCooling(True);
 		
 		#else:
@@ -248,7 +251,7 @@ def checkClimate(setTemp, currTemp , threshold, DIR):
 		#if(coolingOn):
 			#setCooling(False);
 		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: ON")
-		setHeating(True, DIR);
+		setHeating(True, DIR, relayID);
 		
 
 

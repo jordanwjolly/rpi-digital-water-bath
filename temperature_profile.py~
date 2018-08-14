@@ -46,8 +46,11 @@ for t in range(0, RUNTIME*60*60):
 
 	# Does all of the stuff
 	for i, val in enumerate(SetTemps):
-		print('\nTesting Tank: ' + str(i))
-		Actuator_control.checkClimate(SetTemps[i], float(currTemps[i]), ERROR_TOLERANCE, DIR) 
+		if np.isnan(val):
+			continue
+		else:		
+			relayID=i+1
+			Actuator_control.checkClimate(SetTemps[i], float(currTemps[i]), ERROR_TOLERANCE, DIR, relayID) 
 
 	# Update graph
 	if (GRAPH_SHOW): 
