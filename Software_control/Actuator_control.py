@@ -118,14 +118,14 @@ def setHeating(toggle, DIR):
 		
 		# Cannot enable heating if A/C is on
 		if(coolingOn):
-			print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***')
+			#print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***')
 			return
 		
 		if(int(time.time()) < (lastHeaterDisableTime + HEATER_RECOVERY_TIME)):
 			print('*** Cannot enable heating, heater in recovery ***')
 			return;
 		
-		print('Enabling heating...')
+		#print('Enabling heating...')
 		gpio.output(PIN_HEAT, True)
 		subprocess.call(DIR + "/Hardware_control/WTI_on.sh")
 		lastHeaterEnableTime = int(time.time())
@@ -133,7 +133,7 @@ def setHeating(toggle, DIR):
 		print('*** Heating enabled ***')
 		
 	else:
-		print('Disabling heating...')
+		#print('Disabling heating...')
 		gpio.output(PIN_HEAT, False)
 		subprocess.call(DIR + "/Hardware_control/WTI_off.sh")  #Calls bash script to turn heating on
 		
@@ -176,15 +176,14 @@ def setupGPIO():
 
 def currTemp(CURRENT_TEMP_FILE ):
 	#Gets sensor value, returns current temperature
-	print("\nReading current temperature")
+	#print("\nReading current temperature")
 	#s = None
 	#with open(CURRENT_FILE) as file:
 		#s = file.read()
 		#data = json.loads(s)
         #return (data['date'], data['temperature']);
 	#currTemp = data['temperature']
-	currTemp= pickle.load(open(CURRENT_TEMP_FILE , 'r+b'))
-	print(currTemp)
+	currTemp= pickle.load(open(CURRENT_TEMP_FILE , 'r'))
 	return currTemp
 
 
@@ -198,8 +197,8 @@ def checkClimate(setTemp, currTemp , threshold, DIR):
 	global lastCoolerEnableTime
 	global lastHeaterEnableTime
 
-	print("Set-point Temperature is: " + str(setTemp))
-	print("Current Temperature is: " + str(currTemp))
+	#print("Set-point Temperature is: " + str(setTemp))
+	#print("Current Temperature is: " + str(currTemp))
 	
 	if(threshold < TEMP_THRESHOLD ):
 		threshold = TEMP_THRESHOLD
@@ -224,26 +223,32 @@ def checkClimate(setTemp, currTemp , threshold, DIR):
 
 	# TURN THE HEATER/COOLER ON/OFF
 	if(hotterThanSet and coolerThanSet):
-		print('*** Error: Outside of both ranges somehow.');
+		#print('*** Error: Outside of both ranges somehow.');
 		return;
 	
 	if((not hotterThanSet) and (not coolerThanSet)):
-		print('Temperature is in range, no actuation required');
+		#print('Temperature is in range, no actuation required');
+		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
 		setHeating(False, DIR);
+		
 		#setCooling(False);
 	
 	elif(hotterThanSet):
-		print('Water temperature is too warm');
+		#print('Water temperature is too warm');
+		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
 		if(heatingOn):
 			setHeating(False, DIR);
 		#setCooling(True);
-		else:
-			print("*** Heating is off ***")
+		
+		#else:
+			#print("*** Heating is off ***")
 
 	elif(coolerThanSet):
-		print('Water temperature is too cold');
-		if(coolingOn):
-			setCooling(False);
+		#print('Water temperature is too cold');
+		#if(coolingOn):
+			#setCooling(False);
+		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: ON")
 		setHeating(True, DIR);
+		
 
 

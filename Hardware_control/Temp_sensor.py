@@ -6,6 +6,14 @@ import time
 import pickle
 import numpy as np
 
+#CHANGE THIS
+sensorID=["28-000006dc6863","28-000006dc76f3"] #Sensor 1 for tank 1, is in the first place etc...
+
+#DONT CHANGE ANYTHING ELSE
+sensorVAL = np.array([0,0,0,0,0,0,0,0], dtype=np.float) #Initiates an 1x8 array of NaNs
+sensorVAL.fill(np.nan)
+
+
 os.system('modprobe w1-gpio');
 os.system('modprobe w1-therm');
 
@@ -59,18 +67,15 @@ def write_current(temp):
 	
 
 ####MAIN CODE#########
-sensorID=["28-000006dc6863","28-000006dc76f3"] #Sensor 1 for tank 1, is in the first place etc...
-sensorVAL = np.array([0,0,0,0,0,0,0,0], dtype=np.float) #Initiates an 1x8 array of NaNs
-sensorVAL.fill(np.nan)
 
 # First try to get the device file
 print('Finding sensor device file...\n');
 
 while(True):
 
-	for sens in range(0, (len(sensorID))):
+	for index, sensor in enumerate(sensorID):
 	
-		device_file = get_device_file(sensorID[sens]);
+		device_file = get_device_file(sensor);
 
 		avg_temp = -1;
 		try:
@@ -78,14 +83,14 @@ while(True):
 		except KeyboardInterrupt:
 			break;
 		except Exception as e:
-			print('Error getting temp reading from SENSOR ' + str(sens)+': '+str(e));
+			print('Error getting temp reading from SENSOR ' + str(index)+': '+str(e));
 			continue;
 	
 
-		print(sensorID[sens])
+		print('\nCurrent Temp of SENSOR '+str(index+1) +', sensor ID: ' + sensor)
 		print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp));
-		sensorVAL[sens]=avg_temp			
+		sensorVAL[index]=avg_temp			
 		
-	pickle.dump(sensorVAL, open(CURRENT_FILE, 'wb'))
+	pickle.dump(sensorVAL, open(CURRENT_FILE, 'w'))
 	
 	time.sleep(READ_DELAY);

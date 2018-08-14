@@ -44,11 +44,13 @@ for t in range(0, RUNTIME*60*60):
 	# Get current Temperature
 	currTemps = Actuator_control.currTemp(CURRENT_TEMP_FILE)
 
-
 	# Does all of the stuff
-	#first number is allowable temp diff. Second number is set temp
-	Actuator_control.checkClimate(SetTemps[0], float(currTemps[0]), ERROR_TOLERANCE, DIR) 
-
+	for i, val in enumerate(SetTemps):
+		if np.isnan(val):
+			continue
+		else:		
+			print('\nTesting Tank: ' + str(i+1))
+			Actuator_control.checkClimate(SetTemps[i], float(currTemps[i]), ERROR_TOLERANCE, DIR) 
 
 	# Update graph
 	if (GRAPH_SHOW): 
