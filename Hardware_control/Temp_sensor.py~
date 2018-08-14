@@ -91,6 +91,6 @@ while(True):
 		print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp));
 		sensorVAL[index]=avg_temp			
 		
-	pickle.dump(sensorVAL, open(CURRENT_FILE, 'w'))
+	pickle.dump([sensorVAL, 30], open(CURRENT_FILE, 'w'))
 	
 	time.sleep(READ_DELAY);

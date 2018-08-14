@@ -33,14 +33,16 @@ VERBOSE = True;
 # Variables ############################################################################################################
 ########################################################################################################################
 
-settings = None;
-heatingOn = False;
-coolingOn = False;
+Nanarray =  np.array([0,0,0,0,0,0,0,0], dtype=np.float) #Initiates an 1x8 array of NaNs
+Nanarray .fill(np.nan)
 
-lastCoolerDisableTime = 0;
-lastCoolerEnableTime = 0;
-lastHeaterDisableTime = 0;
-lastHeaterEnableTime = 0;
+heatingOn = Nanarray 
+coolingOn = Nanarray 
+
+lastCoolerDisableTime = Nanarray 
+lastCoolerEnableTime = Nanarray 
+lastHeaterDisableTime = Nanarray 
+lastHeaterEnableTime = Nanarray 
 
 # Functions ############################################################################################################
 ########################################################################################################################
@@ -65,7 +67,6 @@ def setCooling(toggle, force=False):
 	global heatingOn;
 	global lastCoolerDisableTime;
 	global lastCoolerEnableTime;
-	global COOLER_RECOVERY_TIME;
 	
 	#Checking to see if keep cooling on
 	if((not force) and (toggle == coolingOn)):
@@ -105,45 +106,44 @@ def setCooling(toggle, force=False):
 def setHeating(toggle, DIR, relayID):
 
 	global heatingOn
-	global lastHeaterEnableTime
-	global lastHeaterDisableTime
-	global HEATER_RECOVERY_TIME
+	global coolingOn
+	global lastCoolerDisableTime;
+	global lastCoolerEnableTime;
 	
-	if(toggle == heatingOn):
-		print('*** Heating stays on***');
+	if(toggle == heatingOn[relayID]):
+		#print('*** Heating stays on***');
 		return;
 	
 	#Checking to see if change
 	if(toggle):
 		
 		# Cannot enable heating if A/C is on
-		if(coolingOn):
+		#if(coolingOn[relayID]):
 			#print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***')
-			return
+			#return
 		
-		if(int(time.time()) < (lastHeaterDisableTime + HEATER_RECOVERY_TIME)):
+		if(int(time.time()) < (lastHeaterDisableTime[relayID] + HEATER_RECOVERY_TIME)):
 			print('*** Cannot enable heating, heater in recovery ***')
 			return;
 		
-		#print('Enabling heating...')
-		gpio.output(PIN_HEAT, True)
-		subprocess.call([DIR + "/Hardware_control/WTI_on.sh", str(relayID)])
+		#enable heating
+		subprocess.call([DIR + "/Hardware_control/WTI_on.sh", str(relayID+1)])
 		delay()
-		lastHeaterEnableTime = int(time.time())
-		heatingOn = True
-		print('*** Heating enabled ***')
+		lastHeaterEnableTime[relayID] = int(time.time())
+		heatingOn[relayID] = True
+		#print('*** Heating enabled ***')
 		
 	else:
-		#print('Disabling heating...')
-		gpio.output(PIN_HEAT, False)
-		subprocess.call([DIR + "/Hardware_control/WTI_off.sh", str(relayID)])  #Calls bash script to turn heating on
+	
+		#Disable heating
+		subprocess.call([DIR + "/Hardware_control/WTI_off.sh", str(relayID+1)])	#Calls bash script to turn heating off
 		delay()
 		
-		if(heatingOn):
-			lastHeaterDisableTime = int(time.time())
+		if(heatingOn[relayID]):
+			lastHeaterDisableTime[relayID] = int(time.time())
 			
-		heatingOn = False;
-		print('*** Heating disabled ***')
+		heatingOn[relayID] = False;
+		#print('*** Heating disabled ***')
 		
 	delay();
 
@@ -167,7 +167,8 @@ def setupGPIO():
 	
 	print("Initially turn all systems off....\n")
 	#setCooling(False, True)
-	setHeating(False, True, 0)
+ 	heatingOn = [False, False, False, False, False, False, False, False]
+	coolingOn = [False, False, False, False, False, False, False, False]
 
 	print('\nGPIO setup complete\n****************************************');
 
@@ -177,15 +178,10 @@ def setupGPIO():
 
 
 def currTemp(CURRENT_TEMP_FILE ):
-	#Gets sensor value, returns current temperature
-	#print("\nReading current temperature")
-	#s = None
-	#with open(CURRENT_FILE) as file:
-		#s = file.read()
-		#data = json.loads(s)
-        #return (data['date'], data['temperature']);
-	#currTemp = data['temperature']
-	currTemp= pickle.load(open(CURRENT_TEMP_FILE , 'r'))
+
+	currTemp= pickle.load(open(CURRENT_TEMP_FILE , 'r'))	
+	currTemp[2]='20.0'
+	currTemp[3]='-4.0'
 	return currTemp
 
 
@@ -201,7 +197,7 @@ def checkClimate(setTemp, currTemp , threshold, DIR, relayID):
 
 	#print("Set-point Temperature is: " + str(setTemp))
 	#print("Current Temperature is: " + str(currTemp))
-	print('\nTesting Tank: ' + str(relayID))
+	print('\nTesting Tank: ' + str(relayID+1))
 	
 	if(threshold < TEMP_THRESHOLD ):
 		threshold = TEMP_THRESHOLD
@@ -212,16 +208,16 @@ def checkClimate(setTemp, currTemp , threshold, DIR, relayID):
 	
 	# CHECKING TO SEE IF TEMP IS ABOVE/BELOW SET POINT
 	# COOLER: Cooler is on, it should stay on until it goes past the threshold
-	if(coolingOn and (setTemp< (currTemp+threshold))):
+	if(coolingOn[relayID]  and (setTemp< (currTemp+threshold))):
 		hotterThanSet = True;
 	# COOLER: Cooler is currently off, it should turn on when it hits the threshold
-	if((not coolingOn) and (setTemp< (currTemp-threshold))):
+	if((not coolingOn[relayID] ) and (setTemp< (currTemp-threshold))):
 		hotterThanSet = True;
 	# HEATER: Heater is on, it should stay on until it goes past the threshold
-	if(heatingOn and (setTemp> (currTemp-threshold))):
+	if(heatingOn[relayID]  and (setTemp> (currTemp-threshold))):
 		coolerThanSet = True;
 	# HEATER: Heater is currently off, it should turn on when it hits the threshold
-	if((not heatingOn) and (setTemp> (currTemp+threshold))):
+	if((not heatingOn[relayID] ) and (setTemp> (currTemp+threshold))):
 		coolerThanSet = True;
 
 	# TURN THE HEATER/COOLER ON/OFF
@@ -230,16 +226,16 @@ def checkClimate(setTemp, currTemp , threshold, DIR, relayID):
 		return;
 	
 	if((not hotterThanSet) and (not coolerThanSet)):
-		#print('Temperature is in range, no actuation required');
+		print('Temperature is in range, no actuation required');
 		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
 		setHeating(False, DIR, relayID);
 		
 		#setCooling(False);
 	
 	elif(hotterThanSet):
-		#print('Water temperature is too warm');
+		print('Water temperature is too warm');
 		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
-		if(heatingOn):
+		if(heatingOn[relayID] ):
 			setHeating(False, DIR, relayID);
 		#setCooling(True);
 		
@@ -247,7 +243,7 @@ def checkClimate(setTemp, currTemp , threshold, DIR, relayID):
 			#print("*** Heating is off ***")
 
 	elif(coolerThanSet):
-		#print('Water temperature is too cold');
+		print('Water temperature is too cold');
 		#if(coolingOn):
 			#setCooling(False);
 		print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: ON")
