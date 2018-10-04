@@ -1,66 +1,89 @@
 #!/usr/bin/python
+#FUTURE WORK:   Have the WTI bash scripts run in the background (so it doesn't block main)
+#               Overhaul multi-sensor temperature driver... is super slow and silly. Make them run in parallel
+#               Fix the implementation of timestep in super loop. Is currently invalid
+#               Graphing of output
+#               Put function in BangBang class to get current temp automatically
+
 
 # LIBRARIES
 import os, time, math, csv
-import numpy as np
-from Software_control import Actuator_control
+#import numpy as np
+from Software_control import BangBang_Controller
 from Software_control import Graph_show
+from Hardware_control import WTI_control
+import config
 
-# FILE PATH INFO
-DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
-CURRENT_TEMP_FILE = DIR+'/Hardware_control/SensorValues.txt'
-SENSOR_SCRIPT_FILE = DIR + '/Hardware_control/Temp_sensor.py'
+# Static Variables
+DIR = os.path.dirname(os.path.realpath(__file__))
+CURRENT_TEMP_FILE = DIR + '/Hardware_control/SensorValues.txt'
 GRAPH_FILE = DIR + '/Software_control/Graph_values.csv'
+INITIALISE = config.initialisationVariables()    # Hack to bring vars in from config. breaks loop if config incorrect
 
-# Sets up everything
-Actuator_control.setupGPIO()
-SetTemps = np.array([0,0,0,0,0,0,0,0], dtype=np.float) #Initiates an 1x8 array of NaNs
-SetTemps.fill(np.nan)
-CurrTemps=SetTemps
+# Class which holds all temps/states/times
+class TankVariables:
+
+    def __init__(self, relay_id, sensor_address):
+        self.Relay_ID = relay_id
+        self.Sensor_Address = sensor_address
+
+    ERROR_TOLERANCE = INITIALISE.ERROR_TOLERANCE
+    COOLER_TIME = INITIALISE.HEATER_RECOVERY_TIME
+    HEATER_TIME = INITIALISE.COOLER_RECOVERY_TIME
+    Current_Temp = float(0) # Should have function to retreive most current temp automatically
+    Set_Temp = float(0)     # Set by controller
+    Heater_State = False    # Current state
+    Heater_Enable = False   # Future state
+    Cooler_State = False
+    Cooler_Enable = False
+    Last_Heater_Disable = time.time()
+    Last_Cooler_Disable = time.time()
 
 
+# Main
+BangBang_Controller.setupGPIO() #Sets up GPIO pins for pi
 
-############MAIN CODE#####################
-##########################################
+#initialising each Tank object based of user input
+tank_list=[]
+for indx, Tank_ID in enumerate(INITIALISE.TANK_ENABLE):
+    tank_list[indx] = TankVariables(Tank_ID, config.sensor_ID(Tank_ID))
 
-# Choose the variables
-ERROR_TOLERANCE = 0.05		#Allowable temperature error tolerance
-RUNTIME = 1 									#Run time of experiment (Is specified in hours)
-GRAPH_SHOW= True				#Toggle True/False to show graphical output of temp profile
-TIME_STEP = 5 								# Refresh rate of sensors (Seconds))
+# Super Loop
+for t in range(0, INITIALISE.RUNTIME * 60 * 60):
 
-# Range of time
-for t in range(0, RUNTIME*60*60):
+    # Get current Temperature
+    currTemps = BangBang_Controller.currTemp(CURRENT_TEMP_FILE)
 
-	# The Equations for our eight water tanks.
- 	# Uncomment for every tank in use
-	SetTemps[0] = 28# +(float(t)/2) 		#equation 1
-	SetTemps[1] = 25.6+(float(t)/200) 	#eqn 2
-	#SetTemps[2] = 28+(float(t)/2) 		#3
-	#SetTemps[3] = 28+(float(t)/2) 		#4
-	#SetTemps[4] = 28+(float(t)/2) #temperature
-	#SetTemps[5] = 28+(float(t)/2) #temperature
-	#SetTemps[6] = 28+(float(t)/2) #temperature
-	#SetTemps[7] = 28+(float(t)/2) #temperature
+    # Loops through list of controller objects, updates controller, and actuates if needed
+    for tank in tank_list:
 
-	# Get current Temperature
-	currTemps = Actuator_control.currTemp(CURRENT_TEMP_FILE)
+        # Updates current temperature
+        tank.Current_Temp=currTemps[0] #FIX FIX FIX FIX FIX
 
-	# Does all of the stuff
-	for relayID, val in enumerate(SetTemps):
-		if np.isnan(val):
-			continue
-		else:		
-			Actuator_control.checkClimate(SetTemps[relayID], float(currTemps[relayID]), ERROR_TOLERANCE, DIR, relayID) 
-	print("#######################################################\n")
-	
-	# Update graph
-	if (GRAPH_SHOW): 	
-		#Graph_show.updateGraph(SetTemps, currTemps, GRAPH_FILE)
-		Graph_show.SaveCurrentValues(SetTemps, currTemps, GRAPH_FILE)
-	
-	# Sets delay between reading intervals (should be larger than 5 seconds)
-	time.sleep(TIME_STEP)
+        # Checks state, to see if state change required
+        print('\nTesting Tank: ' + tank.Relay_ID)
+        tank.Heater_Enable, tank.Cooler_Enable = BangBang_Controller.controller(tank.Set_Temp,
+                                    tank.Current_Temp, tank.Heater_State, tank.Cooler_State, tank.ERROR_TOLERANCE)
 
-# Turns off everything at end of experiment
-Actuator_control.goodbye()
+        # Checks Validity of state change (Based hardware constraints)
+        tank.Heater_State = BangBang_Controller.HeatCheck(tank.Heater_State, tank.Cooler_State,
+                                                          tank.Last_Heater_Disable, tank.HEATER_TIME)
+        tank.Cooler_State = BangBang_Controller.CoolerCheck(tank.Heater_State, tank.Cooler_State,
+                                                            tank.Last_Cooler_Disable, tank.COOLER_TIME)
+
+        # Changes state #Currently only does heater
+        if not tank.Heater_State == tank.Heater_Enable:
+            tank.Last_Heater_Disable = WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID)
+        #if not tank.Cooler_State == tank.Cooler_Enable:
+         #   tank.Last_Cooler_Disable = WTI_control.WTI_logic(tank.Cooler_Enable, DIR, tank.Relay_ID)
+
+    print("#######################################################\n")
+
+    # Update graph
+    if INITIALISE.GRAPH_SHOW:
+         Graph_show.updateGraph(SetTemps, currTemps, GRAPH_FILE)
+        #Graph_show.SaveCurrentValues(SetTemps, currTemps, GRAPH_FILE)
+
+    # Sets delay between reading intervals (should be larger than 5 seconds)
+    time.sleep(INITIALISE.TIME_STEP) #
+
