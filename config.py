@@ -3,12 +3,11 @@
 # This file contains all equations that a user can change
 # It's method of returning initialisation vars is bad practise, but is appropriate for the user
 # A user needs to input the Sensor IDs themselves
-
-
+import math
 
 # Change the variables listed below as required by the experiment
 class initialisationVariables:
-    TANK_ENABLE = [1, 2, 3, 4, 5, 6, 7, 8]  # Specifies which equations/tanks we wish to use, remove numbers as needed
+    TANK_ENABLE = [1, 2]  # Specifies which equations/tanks we wish to use, remove numbers as needed
     ERROR_TOLERANCE = 0.05                  # Allowable temperature error tolerance
     RUNTIME = 1                             # Run time of experiment (Is specified in hours)
     GRAPH_SHOW = True                       # Toggle True/False to show graphical output of temp profile
@@ -25,16 +24,16 @@ def equations(relayID, t):
 
     # Uncomment for every tank in use
     if relayID == 1:
-        return 28           # equation 1
+        return 28 - (t / 2)          # equation 1
 
     elif relayID == 2:
-        return 28 + (t / 2)  # equation 2
+        return 28 + (math.cos(t) * 4)  # equation 2
 
     elif relayID == 3:
-        return 28 + (t / 2)  # equation 3
+        return 10 - (t / 2)  # equation 3
 
     elif relayID == 4:
-        return 28 + (t / 2)  # equation 4
+        return 7 + (2 * t)  # equation 4
 
     elif relayID == 5:
         return 28 + (t / 2)  # equation 5

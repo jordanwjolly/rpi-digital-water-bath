@@ -61,13 +61,13 @@ def currTemp(CURRENT_TEMP_FILE):
     return currTemp
 
 # TURNS ON THE COOLER
-def CoolerCheck(heatingOn, coolingOn, lastCoolerDisableTime, COOLER_RECOVERY_TIME):
+def CoolerCheck(coolingOn, heatingState, lastCoolerDisableTime, COOLER_RECOVERY_TIME):
 
     # If we want to change state, double check is valid
     if coolingOn:
 
         # Cannot enable heating if A/C is on
-        if heatingOn:
+        if heatingState:
             print('*** Cannot enable cooling if heating is on. Must disable heating first! ***')
             return not coolingOn
 
@@ -80,24 +80,29 @@ def CoolerCheck(heatingOn, coolingOn, lastCoolerDisableTime, COOLER_RECOVERY_TIM
         return coolingOn
 
     # Heating stays off
-    else:
+    elif not coolingOn:
         print('*** Cooling stays off ***')
         return coolingOn
 
+    #Error handling
+    else:
+        print("coolingOn variable is incorrect")
+
 
 # Checks heater state against cooler state, and cooldown period
-def HeatCheck(heatingOn, coolingOn, lastHeaterDisableTime, HEATER_RECOVERY_TIME):
+def HeatCheck(heatingOn, coolingState, lastHeaterDisableTime, HEATER_RECOVERY_TIME):
 
     # If we want to change state, double check is valid
     if heatingOn:
 
         # Cannot enable heating if A/C is on
-        if coolingOn:
+        if coolingState:
             print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***')
             return not heatingOn
 
         #cannot enable if is in recovery period
-        elif int(time.time()) < (lastHeaterDisableTime[relayID] + HEATER_RECOVERY_TIME):
+        elif int(time.time()) < (lastHeaterDisableTime + HEATER_RECOVERY_TIME):
+
             print('*** Cannot enable heating, heater in recovery ***')
             return not heatingOn
 
@@ -105,9 +110,13 @@ def HeatCheck(heatingOn, coolingOn, lastHeaterDisableTime, HEATER_RECOVERY_TIME)
         return heatingOn
 
     # Heating stays off
-    else:
+    elif not heatingOn:
         print('*** Heating stays off ***')
         return heatingOn
+    
+    # Error handling
+    else:
+        print ("heatingOn variable is incorrect")
 
 
 def controller(setTemp, currTemp, coolingOn, heatingOn, threshold):
@@ -140,7 +149,7 @@ def controller(setTemp, currTemp, coolingOn, heatingOn, threshold):
 
     if ((not hotterThanSet) and (not coolerThanSet)):
         print('Temperature is in range, no actuation required')
-        print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
+        print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF Cooler: OFF")
 
         heating_state = False
         cooling_state = False
@@ -148,7 +157,7 @@ def controller(setTemp, currTemp, coolingOn, heatingOn, threshold):
 
     elif (hotterThanSet):
         print('Water temperature is too warm')
-        print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF")
+        print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF Cooler: ON")
 
         heating_state = False
         cooling_state = True
@@ -157,7 +166,7 @@ def controller(setTemp, currTemp, coolingOn, heatingOn, threshold):
 
     elif (coolerThanSet):
         print('Water temperature is too cold')
-        print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: ON")
+        print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: ON Cooler: OFF")
 
         heating_state = True
         cooling_state = False

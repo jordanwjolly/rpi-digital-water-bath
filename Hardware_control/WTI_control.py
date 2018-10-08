@@ -14,13 +14,13 @@ def WTI_logic(enable, DIR, relayID):
 
     if enable:
         if enable_relay(DIR, relayID):
-            return time.time()
+            print("WTI SWITCH TURNED ON")
         else:
             print("ERROR TURNING ON WTI SWITCH")
 
     elif not enable:
-        if disable_relay(DIR, relayID)
-            return time.time()
+        if disable_relay(DIR, relayID):
+            print("WTI SWITCH TURNED OFF")
         else:
             print("ERROR TURNING OFF WTI SWITCH")
 
@@ -28,7 +28,7 @@ def WTI_logic(enable, DIR, relayID):
 def enable_relay(DIR, relayID):
     # enable heating
     try:
-        subprocess.call([DIR + "/Hardware_control/WTI_on.sh", str(relayID + 1)])
+        subprocess.Popen([DIR + "/Hardware_control/WTI_on.sh", str(relayID + 1)], shell=True)
 
         time.sleep(1) #Wait because of telnet
         return True
@@ -40,8 +40,8 @@ def enable_relay(DIR, relayID):
 def disable_relay(DIR, relayID):
     # disable relay
     try:
-        subprocess.call(
-            [DIR + "/Hardware_control/WTI_off.sh", str(relayID + 1)])  # Calls bash script to turn heating off
+        subprocess.Popen(
+            [DIR + "/Hardware_control/WTI_off.sh", str(relayID + 1)], shell=True)  # Calls bash script to turn heating off
 
         time.sleep(1)  # Wait because of telnet
         return True
