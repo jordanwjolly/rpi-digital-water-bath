@@ -1,10 +1,10 @@
 #!/usr/bin/python
-#FUTURE WORK:   Have the WTI bash scripts run in the background (so it doesn't block main)
+#FUTURE WORK:   DONE: Have the WTI bash scripts run in the background (so it doesn't block main)
 #               Overhaul multi-sensor temperature driver... is super slow and silly. Make them run in parallel
-#               Fix the implementation of timestep in super loop. Is currently invalid
+#               DONE: Fix the implementation of timestep in super loop. Is currently invalid
 #               Graphing of output
 #               Put function in BangBang class to get current temp automatically
-
+#               Put fancy spinning cursor while waiting for next time-step
 
 # LIBRARIES
 import os, time, math, csv, sys, signal
@@ -13,7 +13,7 @@ from multiprocessing import Process
 from Software_control import BangBang_Controller
 #from Software_control import Graph_show
 from Hardware_control import WTI_control
-from Hardware_control import Temp_sensor
+#from Hardware_control import Temp_sensor
 import config
 
 # Static Variables
@@ -76,9 +76,9 @@ def main():
     # MAIN Super Loop
     for t in range(0, INITIALISE.RUNTIME * 60 * 60, INITIALISE.TIME_STEP):
         
-        current_time = time.time()
+        current_time = time.time() #getting current time for TIME_STEP validation
 
-        # Get current Temperature
+        # Get current Temperature 
         currTemps = 22.3#BangBang_Controller.currTemp(CURRENT_TEMP_FILE)
 
         # Loops through list of controller objects, updates controller, and actuates if needed
