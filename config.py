@@ -52,7 +52,7 @@ def equations(relayID, t):
 # This function returns the hardcoded addresses of the temperature sensors
 # NOTE: keeping with convention, index starts at '1'.
 # Sensor 1 for tank 1, is in the first place etc...
-def sensor_ID(relayID):
+def sensor_ID():
 
     s1 = "28-000006dc6863"
     s2 = "28-000006dc76f3"
@@ -64,4 +64,4 @@ def sensor_ID(relayID):
     s8 = None
 
     sensorID = [s1, s2, s3, s4, s5, s6, s7, s8]
-    return [sensorID[relayID-1]] #minus one because index is 0, not 1
+    return sensorID

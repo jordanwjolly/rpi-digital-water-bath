@@ -9,9 +9,11 @@
 # LIBRARIES
 import os, time, math, csv, sys, signal
 #import numpy as np
+from multiprocessing import Process
 from Software_control import BangBang_Controller
 #from Software_control import Graph_show
 from Hardware_control import WTI_control
+from Hardware_control import Temp_sensor
 import config
 
 # Static Variables
@@ -23,9 +25,8 @@ INITIALISE = config.initialisationVariables()    # Hack to bring vars in from co
 # Class which holds all temps/states/times
 class TankVariables:
 
-    def __init__(self, relay_id, sensor_address):
+    def __init__(self, relay_id):
         self.Relay_ID = relay_id
-        self.Sensor_Address = sensor_address
 
     ERROR_TOLERANCE = INITIALISE.ERROR_TOLERANCE
     COOLER_TIME = INITIALISE.COOLER_RECOVERY_TIME
@@ -45,6 +46,11 @@ def sigterm_handler(signal, frame):
     print('Exiting because of SIGTERM')
     sys.exit(0)
 
+def spinning_cursor():
+    while True:
+        for cursor in '|/-\\':
+            yield cursor
+
 # Main
 def main():
    
@@ -61,10 +67,11 @@ def main():
     tank_list=[None, None, None, None, None, None, None, None]
     print("\nRUNNING PROGRAM WITH FOLLOWING TANKS: "+str(INITIALISE.TANK_ENABLE)+"\n")
     for indx, Tank_ID in enumerate(INITIALISE.TANK_ENABLE):
-        tank_list[indx] = TankVariables(Tank_ID, config.sensor_ID(Tank_ID))
+        tank_list[indx] = TankVariables(Tank_ID)
     
     #Sets up GPIO pins for pi
     BangBang_Controller.setupGPIO()
+    #Process(target=Temp_Sensor.start_temp_sensor(config.sensor_ID), args=(config.sensor_ID)).run() #starts temp sensor process
 
     # MAIN Super Loop
     for t in range(0, INITIALISE.RUNTIME * 60 * 60, INITIALISE.TIME_STEP):
@@ -126,9 +133,13 @@ def main():
          # Print nice output, ready for next graph
         print("#######################################################\n")
          
+        spinner=spinning_cursor() 
         # ensures that the loop is remaining within the given TIME_STEP
         while ((time.time()-current_time) < INITIALISE.TIME_STEP): #
             time. sleep(0.1)
+            sys.stdout.write(next(spinner))
+            sys.stdout.flush()
+            sys.stdout.write('\b')
                     
 
 ###################################
