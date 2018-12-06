@@ -10,16 +10,20 @@ import time
 
 # If enable is true, turn on relay
 # Returns time
-def WTI_logic(enable, DIR, relayID):
+def WTI_logic(enable, DIR, relayID, DUMMY):
 
     if enable:
-        if enable_relay(DIR, relayID):
+        if DUMMY:
+            print("DUMMY TEST: WTI SWITCH TURNED ONNNNN")
+        elif enable_relay(DIR, relayID):
             print("WTI SWITCH TURNED ON")
         else:
             print("ERROR TURNING ON WTI SWITCH")
 
     elif not enable:
-        if disable_relay(DIR, relayID):
+        if DUMMY:
+            print("DUMMY TEST: WTI SWITCH TURNED OFFFFF")
+        elif disable_relay(DIR, relayID):
             print("WTI SWITCH TURNED OFF")
         else:
             print("ERROR TURNING OFF WTI SWITCH")

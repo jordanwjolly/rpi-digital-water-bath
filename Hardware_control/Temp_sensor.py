@@ -6,6 +6,17 @@ import time
 import pickle
 import numpy as np
 
+# Constants ############################################################################################################
+########################################################################################################################
+# Save path of current temperature
+DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
+TEMPERATURE_FILE = DIR + '/SensorValues.txt'
+
+
+def current_temp(Relay_ID):
+	Relay_ID=Relay_ID-1 #moving base 1 to base 0
+	currTemp = pickle.load(open(TEMPERATURE_FILE, 'r'))
+	return currTemp[Relay_ID]
 
 def get_device_file(sensorID):
 	global BASE_DIR;
@@ -49,42 +60,39 @@ def write_current(temp):
 
 ####MAIN CODE#########
 def start_temp_readings(sensorID):
+	os.system('modprobe w1-gpio')
+	os.system('modprobe w1-them')
+	READ_DELAY = 0.1
+	AVERAGE_COUNT=3
 
-    os.system('modprobe w1-gpio')
-    os.system('modprobe w1-them')
+	BASE_DIR = '/sys/bus/w1/devices'
 
-    READ_DELAY = 0.1
-    AVERAGE_COUNT=3
 
-    BASE_DIR = '/sys/bus/w1/devices' 
 
-    DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
-    CURRENT_FILE = DIR + '/Sensorvalues.txt'
+	# First try to get the device file
+	print('Finding sensor device file...\n');
 
-    # First try to get the device file
-    print('Finding sensor device file...\n');
+	while(True):
 
-    while(True):
-            
-            print("\n#######################################################")
-            for index, sensor in enumerate(sensorID):
-            
-                    device_file = get_device_file(sensor);
+			print("\n#######################################################")
+			for index, sensor in enumerate(sensorID):
 
-                    avg_temp = -1;
-                    try:
-                            avg_temp = get_average_temp(device_file);
-                    except KeyboardInterrupt:
-                            break;
-                    except Exception as e:
-                            print('Error getting temp reading from SENSOR ' + str(index)+': '+str(e));
-                            continue;
-            
+					device_file = get_device_file(sensor);
 
-                    print('\nCurrent Temp of SENSOR '+str(index+1) +', sensor ID: ' + sensor)
-                    print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp));
-                    sensorVAL[index]=avg_temp			
-                    
-            pickle.dump(sensorVAL, open(CURRENT_FILE, 'w'))
-            
-            time.sleep(READ_DELAY);
+					avg_temp = -1;
+					try:
+							avg_temp = get_average_temp(device_file);
+					except KeyboardInterrupt:
+							break;
+					except Exception as e:
+							print('Error getting temp reading from SENSOR ' + str(index)+': '+str(e));
+							continue;
+
+
+					print('\nCurrent Temp of SENSOR '+str(index+1) +', sensor ID: ' + sensor)
+					print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp));
+					sensorVAL[index]=avg_temp
+
+			pickle.dump(sensorVAL, open(TEMPERATURE_FILE, 'w'))
+
+			time.sleep(READ_DELAY);

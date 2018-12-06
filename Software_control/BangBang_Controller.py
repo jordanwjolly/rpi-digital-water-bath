@@ -4,61 +4,10 @@
 ########################################################################################################################
 
 import os  # OS functions
-import RPi.GPIO as gpio  # GPIO library
 import time  # Time functions
-import pickle
-
-# Constants ############################################################################################################
-########################################################################################################################
-# Save path of current temperature
-DIR = dir_path = os.path.dirname(os.path.realpath(__file__))
-CURRENT_FILE = DIR + '/SensorValues.txt'
-
-
-# Relay pins
-BOARD_MODE = gpio.BOARD  # The GPIO board mode setting
-PIN_HEAT = 38  # Pin for heat unit.
-PIN_COOL = 40  # Pin for "cooler
-TOGGLE_DELAY = 1
 
 # Functions ############################################################################################################
 ########################################################################################################################
-
-
-def delay():
-    global TOGGLE_DELAY
-    time.sleep(TOGGLE_DELAY)
-
-
-def setupGPIO():
-    global BOARD_MODE
-    global PIN_HEAT
-    global PIN_COOL
-
-    print('\nSetting up GPIO... \n')
-    gpio.setwarnings(False)
-
-    # Setting board mode.
-    gpio.setmode(BOARD_MODE)
-
-    # Setting up output pins
-    gpio.setup(PIN_HEAT, gpio.OUT)
-    gpio.setup(PIN_COOL, gpio.OUT)
-
-    gpio.output(PIN_HEAT, True)
-    gpio.output(PIN_COOL, True)
-
-    print("Initially turn all systems off....\n")
-    # setCooling(False, True)
-    heatingOn = [False, False, False, False, False, False, False, False]
-    coolingOn = [False, False, False, False, False, False, False, False]
-
-    print('\nGPIO setup complete\n****************************************');
-
-
-def currTemp(CURRENT_TEMP_FILE):
-    currTemp = pickle.load(open(CURRENT_TEMP_FILE, 'r'))
-    return currTemp
 
 # TURNS ON THE COOLER
 def CoolerCheck(coolingOn, heatingState, lastCoolerDisableTime, COOLER_RECOVERY_TIME):
@@ -68,7 +17,7 @@ def CoolerCheck(coolingOn, heatingState, lastCoolerDisableTime, COOLER_RECOVERY_
 
         # Cannot enable heating if A/C is on
         if heatingState:
-            print('*** Cannot enable cooling if heating is on. Must disable heating first! ***')
+            print('*** Cannot enable cooling if heating is on. Disabling heating first! ***')
             return not coolingOn
 
         #cannot enable if is in recovery period
@@ -97,7 +46,7 @@ def HeatCheck(heatingOn, coolingState, lastHeaterDisableTime, HEATER_RECOVERY_TI
 
         # Cannot enable heating if A/C is on
         if coolingState:
-            print('*** Cannot enable heating if cooling is on. Must disable cooling first! ***')
+            print('*** Cannot enable heating if cooling is on. Disabling cooling first! ***')
             return not heatingOn
 
         #cannot enable if is in recovery period

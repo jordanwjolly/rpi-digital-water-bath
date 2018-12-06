@@ -2,12 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4ab367fe-f51f-47ae-b6b5-dfda9848be36" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Hardware_control/WTI_control.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Hardware_control/RPi_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/RaspberryPiThermostat.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/RaspberryPiThermostat.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Hardware_control/Temp_pusher.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Software_control/Actuator_control.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hardware_control/Temp_sensor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Hardware_control/Temp_sensor.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Hardware_control/WTI_control.py" beforeDir="false" afterPath="$PROJECT_DIR$/Hardware_control/WTI_control.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Software_control/BangBang_Controller.py" beforeDir="false" afterPath="$PROJECT_DIR$/Software_control/BangBang_Controller.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Software_control/Graph_show.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Software_control/Graph_values.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temperature_profile.py" beforeDir="false" afterPath="$PROJECT_DIR$/temperature_profile.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,34 +26,10 @@
       <file leaf-file-name="temperature_profile.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/temperature_profile.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+            <state relative-caret-position="1511">
+              <caret line="143" column="34" lean-forward="true" selection-start-line="143" selection-start-column="34" selection-end-line="143" selection-end-column="34" />
               <folding>
-                <element signature="e#437#463#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BangBang_Controller.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Software_control/BangBang_Controller.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="435">
-              <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="28" />
-              <folding>
-                <element signature="e#262#287#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WTI_control.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Hardware_control/WTI_control.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="35" column="6" selection-start-line="35" selection-start-column="6" selection-end-line="35" selection-end-column="6" />
-              <folding>
-                <element signature="e#19#36#0" expanded="true" />
+                <element signature="e#523#562#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -58,17 +38,8 @@
       <file leaf-file-name="config.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/config.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1005">
-              <caret line="67" column="69" lean-forward="true" selection-start-line="67" selection-start-column="69" selection-end-line="67" selection-end-column="69" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/test.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="37" />
+            <state relative-caret-position="840">
+              <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
             </state>
           </provider>
         </entry>
@@ -76,8 +47,11 @@
       <file leaf-file-name="Temp_sensor.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="375">
-              <caret line="29" column="18" lean-forward="true" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
+            <state relative-caret-position="525">
+              <caret line="35" column="27" lean-forward="true" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
+              <folding>
+                <element signature="e#19#28#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -97,6 +71,9 @@
       <find>settings</find>
       <find>stuck</find>
       <find>SENSOR_SCRIPT_FILE</find>
+      <find>delay</find>
+      <find>alse</find>
+      <find>RUNTIME</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -114,22 +91,25 @@
         <option value="$PROJECT_DIR$/Sensor/sensor.py" />
         <option value="$PROJECT_DIR$/Software_control/actuator_control.py" />
         <option value="$PROJECT_DIR$/Temperature_profile.py" />
-        <option value="$PROJECT_DIR$/Software_control/Graph_show.py" />
         <option value="$PROJECT_DIR$/test_call.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/Software_control/Actuator_control.py" />
-        <option value="$PROJECT_DIR$/config.py" />
-        <option value="$PROJECT_DIR$/Software_control/BangBang_Controller.py" />
         <option value="$PROJECT_DIR$/Hardware_control/WTI_control.py" />
+        <option value="$PROJECT_DIR$/Software_control/Graph_show.py" />
+        <option value="$PROJECT_DIR$/Hardware_control/RPi_control.py" />
+        <option value="$PROJECT_DIR$/Software_control/BangBang_Controller.py" />
+        <option value="$PROJECT_DIR$/Hardware_control/Temp_sensor.py" />
+        <option value="$PROJECT_DIR$/Software_control/Temp_Grapher.py" />
         <option value="$PROJECT_DIR$/temperature_profile.py" />
+        <option value="$PROJECT_DIR$/config.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="4" />
-    <option name="y" value="23" />
-    <option name="width" value="425" />
-    <option name="height" value="777" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="65" />
+    <option name="y" value="24" />
+    <option name="width" value="1855" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -141,17 +121,17 @@
         <subPane>
           <expand>
             <path>
-              <item name="RaspberryPiThermostat" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RaspberryPiThermostat" type="462c0819:PsiDirectoryNode" />
+              <item name="RPiAquariumTempController" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RPiAquariumTempController" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="RaspberryPiThermostat" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RaspberryPiThermostat" type="462c0819:PsiDirectoryNode" />
+              <item name="RPiAquariumTempController" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RPiAquariumTempController" type="462c0819:PsiDirectoryNode" />
               <item name="Hardware_control" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
-              <item name="RaspberryPiThermostat" type="b2602c69:ProjectViewProjectNode" />
-              <item name="RaspberryPiThermostat" type="462c0819:PsiDirectoryNode" />
+              <item name="RPiAquariumTempController" type="b2602c69:ProjectViewProjectNode" />
+              <item name="RPiAquariumTempController" type="462c0819:PsiDirectoryNode" />
               <item name="Software_control" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -216,19 +196,19 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="4" y="23" width="1276" height="777" extended-state="6" />
+    <frame x="65" y="24" width="1855" height="1056" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17768924" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17897575" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32941177" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32941177" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -266,22 +246,104 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py">
+    <entry file="file://$PROJECT_DIR$/temperature_profile.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="390">
-          <caret line="26" lean-forward="true" selection-start-line="26" selection-end-line="26" />
+          <caret line="33" column="57" selection-start-line="33" selection-start-column="57" selection-end-line="33" selection-end-column="57" />
           <folding>
-            <element signature="e#262#289#0" expanded="true" />
+            <element signature="e#523#562#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Software_control/BangBang_Controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+          <folding>
+            <element signature="e#262#287#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/WTI_control.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="35" column="6" selection-start-line="35" selection-start-column="6" selection-end-line="35" selection-end-column="6" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="23" selection-start-line="23" selection-end-line="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" selection-start-line="2" selection-end-line="2" />
+          <folding>
+            <element signature="e#19#28#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/temperature_profile.py">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+          <folding>
+            <element signature="e#523#562#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Software_control/BangBang_Controller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="390">
+          <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="28" />
+          <folding>
+            <element signature="e#262#287#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/WTI_control.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="510">
+          <caret line="35" column="6" selection-start-line="35" selection-start-column="6" selection-end-line="35" selection-end-column="6" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1005">
+          <caret line="67" lean-forward="true" selection-start-line="67" selection-end-line="67" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="29" column="18" lean-forward="true" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py" />
+    <entry file="file://$PROJECT_DIR$/temperature_profile.py">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="435">
           <caret line="31" column="26" lean-forward="true" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
           <folding>
-            <element signature="e#437#463#0" expanded="true" />
+            <element signature="e#523#562#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -293,16 +355,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3090">
-          <caret line="209" column="67" selection-start-line="209" selection-start-column="67" selection-end-line="209" selection-end-column="67" />
-          <folding>
-            <element signature="e#262#289#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py" />
     <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1290">
@@ -317,13 +370,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3090">
-          <caret line="209" column="67" selection-start-line="209" selection-start-column="67" selection-end-line="209" selection-end-column="67" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py" />
     <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1290">
@@ -350,74 +397,85 @@
     <entry file="file://$PROJECT_DIR$/Aquarium-Controller/graph_show.py" />
     <entry file="file://$PROJECT_DIR$/Sensor/sensor.py" />
     <entry file="file://$PROJECT_DIR$/temperature_profile.py" />
+    <entry file="file://$PROJECT_DIR$/test_call.py" />
+    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py" />
+    <entry file="file://$PROJECT_DIR$/test.py" />
     <entry file="file://$PROJECT_DIR$/Software_control/Graph_show.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="27" column="29" lean-forward="true" selection-start-line="27" selection-start-column="29" selection-end-line="27" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_call.py" />
-    <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_pusher.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Software_control/Actuator_control.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="79" lean-forward="true" selection-start-line="79" selection-end-line="79" />
+        <state relative-caret-position="90">
+          <caret line="6" column="50" lean-forward="true" selection-start-line="6" selection-start-column="50" selection-end-line="6" selection-end-column="50" />
           <folding>
-            <element signature="e#262#289#0" expanded="true" />
+            <element signature="e#33#49#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
+    <entry file="file://$PROJECT_DIR$/Software_control/Temp_Grapher.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="29" column="18" lean-forward="true" selection-start-line="29" selection-start-column="18" selection-end-line="29" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1005">
-          <caret line="67" column="69" lean-forward="true" selection-start-line="67" selection-start-column="69" selection-end-line="67" selection-end-column="69" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Hardware_control/WTI_control.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="35" column="6" selection-start-line="35" selection-start-column="6" selection-end-line="35" selection-end-column="6" />
+        <state relative-caret-position="390">
+          <caret line="26" column="10" lean-forward="true" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
           <folding>
-            <element signature="e#19#36#0" expanded="true" />
+            <element signature="e#33#49#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Software_control/BangBang_Controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="4" selection-start-line="29" selection-start-column="4" selection-end-line="29" selection-end-column="28" />
+        <state relative-caret-position="510">
+          <caret line="34" lean-forward="true" selection-start-line="34" selection-end-line="34" />
           <folding>
             <element signature="e#262#287#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/WTI_control.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="5" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/RPi_control.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
+          <folding>
+            <element signature="e#19#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/WTI_off.sh">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Hardware_control/Temp_sensor.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="35" column="27" lean-forward="true" selection-start-line="35" selection-start-column="27" selection-end-line="35" selection-end-column="27" />
+          <folding>
+            <element signature="e#19#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="840">
+          <caret line="56" lean-forward="true" selection-start-line="56" selection-end-line="56" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/temperature_profile.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="15" lean-forward="true" selection-start-line="15" selection-end-line="15" />
+        <state relative-caret-position="1511">
+          <caret line="143" column="34" lean-forward="true" selection-start-line="143" selection-start-column="34" selection-end-line="143" selection-end-column="34" />
           <folding>
-            <element signature="e#437#463#0" expanded="true" />
+            <element signature="e#523#562#0" expanded="true" />
           </folding>
         </state>
       </provider>

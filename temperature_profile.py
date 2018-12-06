@@ -1,26 +1,32 @@
 #!/usr/bin/python
 #FUTURE WORK:   DONE: Have the WTI bash scripts run in the background (so it doesn't block main)
-#               Overhaul multi-sensor temperature driver... is super slow and silly. Make them run in parallel
 #               DONE: Fix the implementation of timestep in super loop. Is currently invalid
-#               Graphing of output
+#               DONE: Put fancy spinning cursor while waiting for next time-step
+
+#TO DO!!!!
+#Fix up the temp logger file, has relance on old global vars
+#               sub-plotting of output graphs
 #               Put function in BangBang class to get current temp automatically
-#               Put fancy spinning cursor while waiting for next time-step
+#               Overhaul multi-sensor temperature driver... is super slow and silly. Make them run in parallel
 
 # LIBRARIES
-import os, time, math, csv, sys, signal
+import os, time, csv, sys, signal
 #import numpy as np
 from multiprocessing import Process
 from Software_control import BangBang_Controller
-#from Software_control import Graph_show
+from Software_control import Temp_Grapher
 from Hardware_control import WTI_control
-#from Hardware_control import Temp_sensor
+from Hardware_control import Temp_sensor
 import config
 
 # Static Variables
 DIR = os.path.dirname(os.path.realpath(__file__))
 CURRENT_TEMP_FILE = DIR + '/Hardware_control/SensorValues.txt'
-GRAPH_FILE = DIR + '/Software_control/Graph_values.csv'
+GRAPH_DIR = DIR + '/Graph_data/'
 INITIALISE = config.initialisationVariables()    # Hack to bring vars in from config. breaks loop if config incorrect
+
+if not INITIALISE.DUMMY:
+    from Hardware_control import RPi_control
 
 # Class which holds all temps/states/times
 class TankVariables:
@@ -57,29 +63,24 @@ def main():
     #Registering Handler
     signal.signal(signal.SIGTERM, sigterm_handler)
 
-    #Flag which allows dummy data for testing
-    if len(sys.argv) > 1:
-        if sys.arv[1]=="Dummy":
-            print("** Dummy data is being used for testing!! **")
-            Dummy_Flag=True
-
     #initialising each Tank object based of user input
     tank_list=[None, None, None, None, None, None, None, None]
     print("\nRUNNING PROGRAM WITH FOLLOWING TANKS: "+str(INITIALISE.TANK_ENABLE)+"\n")
     for indx, Tank_ID in enumerate(INITIALISE.TANK_ENABLE):
         tank_list[indx] = TankVariables(Tank_ID)
     
-    #Sets up GPIO pins for pi
-    BangBang_Controller.setupGPIO()
-    #Process(target=Temp_Sensor.start_temp_sensor(config.sensor_ID), args=(config.sensor_ID)).run() #starts temp sensor process
+    #Sets up GPIO pins for pi. SHOULD START TEMP SENSOR HERE
+    if not INITIALISE.DUMMY:
+        RPi_control.setupGPIO()
+        #Process(target=Temp_Sensor.start_temp_sensor(config.sensor_ID), args=(config.sensor_ID)).run() #starts temp sensor process
 
     # MAIN Super Loop
-    for t in range(0, INITIALISE.RUNTIME * 60 * 60, INITIALISE.TIME_STEP):
-        
-        current_time = time.time() #getting current time for TIME_STEP validation
+    TIME_STEP = INITIALISE.REFRESH_TIME * len(INITIALISE.TANK_ENABLE)
+    for t in range(0, INITIALISE.RUNTIME, TIME_STEP): #Is calculated in seconds, range time skip increases based of # of tanks
 
-        # Get current Temperature 
-        currTemps = 22.3#BangBang_Controller.currTemp(CURRENT_TEMP_FILE)
+        current_time = time.time() #getting current time for TIME_STEP validation
+        print (current_time)
+        print(type(current_time))
 
         # Loops through list of controller objects, updates controller, and actuates if needed
         for tank in tank_list:
@@ -88,7 +89,7 @@ def main():
                 continue
 
             # Updates current temperature
-            tank.Current_Temp= currTemps #FIX FIX FIX FIX FIX
+            tank.Current_Temp = Temp_sensor.current_temp(tank.Relay_ID)
             tank.Set_Temp = config.equations(tank.Relay_ID, t)
 
             # Checks state, to see if state change required
@@ -105,7 +106,7 @@ def main():
             # Changes state of Heater and actuates (If required)
             if not tank.Heater_State == tank.Heater_Enable:
                 
-                WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID) #Turn the relay on/off
+                WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off
                 tank.Heater_State = tank.Heater_Enable #changing last state heater
 
                 if not tank.Heater_Enable: # updating last disable time
@@ -115,32 +116,32 @@ def main():
             if not tank.Cooler_State == tank.Cooler_Enable:
                 
                 print("IF WE HAD A COOLER, I WOULD CHANGE THE STATE NOW")
-                # WTI_control.WTI.logic(tank.Cooler_Enable, DIR, tank.Relay_ID) #This will change a relay
+                # WTI_control.WTI.logic(tank.Cooler_Enable, DIR, tank.Relay_ID,  DUMMY) #This will change a relay
                 tank.Cooler_State = tank.Cooler_Enable #Updating last state of cooler
                 
                 if not tank.Cooler_Enable: # updating last disable time
                     tank.Last_Cooler_Disable = time.time()
 
             #Saves current values for tank 'x' to csv
+            Temp_Grapher.saveCurrentValue(tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, GRAPH_DIR)
+            #print("Updated values of graph")
+
+            # update GUI graph results
             if INITIALISE.GRAPH_SHOW:
-                #Graph_show.saveCurrentValue(time.time(), tank.Set_Temp, tank.Current_Temp, tank.Relay_ID)
-                print("Updated values of graph")
-        # update GUI graph results
-        if INITIALISE.GRAPH_SHOW:
-            # Graph_show.updateGraph(INITIALISE.TANK_ENABLE)
-            print("WOW...Graph")
+                Temp_Grapher.updateGraph(GRAPH_DIR, tank.Relay_ID)
+                print("WOW...Graph")
 
          # Print nice output, ready for next graph
         print("#######################################################\n")
          
         spinner=spinning_cursor() 
         # ensures that the loop is remaining within the given TIME_STEP
-        while ((time.time()-current_time) < INITIALISE.TIME_STEP): #
+        #pPUT LOGIC HERE TO STATE IF LOOP USES MORE TIME THAN TIMESTEP
+        while ((time.time()-current_time) < TIME_STEP): #
             time. sleep(0.1)
             sys.stdout.write(next(spinner))
             sys.stdout.flush()
             sys.stdout.write('\b')
-                    
 
 ###################################
 if __name__ == "__main__":

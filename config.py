@@ -7,27 +7,28 @@ import math
 
 # Change the variables listed below as required by the experiment
 class initialisationVariables:
-    TANK_ENABLE = [1, 2]  # Specifies which equations/tanks we wish to use, remove numbers as needed
+    TANK_ENABLE = [1,2, 3, 4,  5, 6, 7, 8]  # Specifies which equations/tanks we wish to use, remove numbers as needed
     ERROR_TOLERANCE = 0.05                  # Allowable temperature error tolerance
-    RUNTIME = 1                             # Run time of experiment (Is specified in hours)
-    GRAPH_SHOW = True                       # Toggle True/False to show graphical output of temp profile
-    TIME_STEP = 5                           # Refresh rate of system (Seconds))
-    COOLER_RECOVERY_TIME = 60
-    HEATER_RECOVERY_TIME = 10
+    RUNTIME = 60*60*2                       # Run time of experiment (Is specified in seconds)
+    GRAPH_SHOW = False                       # Toggle True/False to show graphical output of temp profile
+    REFRESH_TIME = 2                           # Refresh rate of system (Seconds)) IS PER TANK
+    COOLER_RECOVERY_TIME = 60               # seconds
+    HEATER_RECOVERY_TIME = 10               # seconds
+    DUMMY = True                            # can run on no RPi machine if True
 
 
 # The Equations for our eight water tanks.
 # To change the equation for a specifc relay, change the return value
 # A more natural language reading of the function is " for a given relayID, return the set temperature for a given 't' "
+# 't' is in seconds
 def equations(relayID, t):
     t = float(t)  # casting to float (saftey)
 
-    # Uncomment for every tank in use
     if relayID == 1:
-        return 28 - (t / 2)          # equation 1
+        return 28 - ((t/60) / 2)          # equation 1
 
     elif relayID == 2:
-        return 28 + (math.cos(t) * 4)  # equation 2
+        return 22 + (math.cos(t/5) * 4)  # equation 2
 
     elif relayID == 3:
         return 10 - (t / 2)  # equation 3
