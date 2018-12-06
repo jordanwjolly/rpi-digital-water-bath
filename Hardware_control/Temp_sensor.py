@@ -44,8 +44,8 @@ def read_temp(device_file):
 	temp_c = float(temp_string)/1000.0;
 	return (temp_c);
 
-def get_average_temp(device_file):
-	global AVERAGE_COUNT
+def get_average_temp(SENSOR_AVRG,device_file):
+	AVERAGE_COUNT = SENSOR_AVRG
 	
 	total_c = 0
 	for i in range(0,AVERAGE_COUNT):
@@ -63,7 +63,7 @@ def start_temp_readings(sensorID):
 	os.system('modprobe w1-gpio')
 	os.system('modprobe w1-them')
 	READ_DELAY = 0.1
-	AVERAGE_COUNT=3
+	SENSOR_AVRG=3
 
 	BASE_DIR = '/sys/bus/w1/devices'
 
@@ -81,7 +81,7 @@ def start_temp_readings(sensorID):
 
 					avg_temp = -1;
 					try:
-							avg_temp = get_average_temp(device_file);
+							avg_temp = get_average_temp(SENSOR_AVRG, device_file);
 					except KeyboardInterrupt:
 							break;
 					except Exception as e:

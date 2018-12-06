@@ -2,12 +2,14 @@
 #FUTURE WORK:   DONE: Have the WTI bash scripts run in the background (so it doesn't block main)
 #               DONE: Fix the implementation of timestep in super loop. Is currently invalid
 #               DONE: Put fancy spinning cursor while waiting for next time-step
+#               DONE: Validate the timestep incrementing in real-time
 
 #TO DO!!!!
 #Fix up the temp logger file, has relance on old global vars
-#               sub-plotting of output graphs
+#               sub-plotting of output graphs/fix gross matplotlib graphing
 #               Put function in BangBang class to get current temp automatically
 #               Overhaul multi-sensor temperature driver... is super slow and silly. Make them run in parallel
+#               Loose the pickle format
 
 # LIBRARIES
 import os, time, csv, sys, signal
@@ -57,6 +59,9 @@ def spinning_cursor():
         for cursor in '|/-\\':
             yield cursor
 
+def time_step(current_time):
+    return time.time() - current_time
+
 # Main
 def main():
    
@@ -75,12 +80,13 @@ def main():
         #Process(target=Temp_Sensor.start_temp_sensor(config.sensor_ID), args=(config.sensor_ID)).run() #starts temp sensor process
 
     # MAIN Super Loop
-    TIME_STEP = INITIALISE.REFRESH_TIME * len(INITIALISE.TANK_ENABLE)
-    for t in range(0, INITIALISE.RUNTIME, TIME_STEP): #Is calculated in seconds, range time skip increases based of # of tanks
+    TIME_STEP_THRESH = INITIALISE.REFRESH_TIME * len(INITIALISE.TANK_ENABLE)
+    t=0
+
+    while (t < INITIALISE.RUNTIME): #Is calculated in seconds, range time skip increases based of # of tanks
 
         current_time = time.time() #getting current time for TIME_STEP validation
-        print (current_time)
-        print(type(current_time))
+        print(current_time)
 
         # Loops through list of controller objects, updates controller, and actuates if needed
         for tank in tank_list:
@@ -123,8 +129,7 @@ def main():
                     tank.Last_Cooler_Disable = time.time()
 
             #Saves current values for tank 'x' to csv
-            Temp_Grapher.saveCurrentValue(tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, GRAPH_DIR)
-            #print("Updated values of graph")
+            Temp_Grapher.saveCurrentValue(t, tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, GRAPH_DIR)
 
             # update GUI graph results
             if INITIALISE.GRAPH_SHOW:
@@ -135,13 +140,18 @@ def main():
         print("#######################################################\n")
          
         spinner=spinning_cursor() 
-        # ensures that the loop is remaining within the given TIME_STEP
-        #pPUT LOGIC HERE TO STATE IF LOOP USES MORE TIME THAN TIMESTEP
-        while ((time.time()-current_time) < TIME_STEP): #
+
+        TIME_STEP=time_step(current_time)
+
+        while TIME_STEP < TIME_STEP_THRESH: #
             time. sleep(0.1)
             sys.stdout.write(next(spinner))
             sys.stdout.flush()
             sys.stdout.write('\b')
+            TIME_STEP = time_step(current_time)
+
+        # Updates t based off most current time delta
+        t=t+ time_step(current_time)
 
 ###################################
 if __name__ == "__main__":

@@ -7,14 +7,15 @@ import math
 
 # Change the variables listed below as required by the experiment
 class initialisationVariables:
-    TANK_ENABLE = [1,2, 3, 4,  5, 6, 7, 8]  # Specifies which equations/tanks we wish to use, remove numbers as needed
-    ERROR_TOLERANCE = 0.05                  # Allowable temperature error tolerance
+    TANK_ENABLE = [1,2]  # Specifies which equations/tanks we wish to use, remove numbers as needed
+    ERROR_TOLERANCE = 0.1                  # Allowable temperature error tolerance
     RUNTIME = 60*60*2                       # Run time of experiment (Is specified in seconds)
-    GRAPH_SHOW = False                       # Toggle True/False to show graphical output of temp profile
-    REFRESH_TIME = 2                           # Refresh rate of system (Seconds)) IS PER TANK
+    GRAPH_SHOW = True                     # Toggle True/False to show graphical output of temp profile
+    REFRESH_TIME = 2                        # Refresh rate of system (Seconds)) IS PER TANK
     COOLER_RECOVERY_TIME = 60               # seconds
     HEATER_RECOVERY_TIME = 10               # seconds
     DUMMY = True                            # can run on no RPi machine if True
+    SENSOR_AVRG = 3                         # number of readings taken per temp sensor and averaged
 
 
 # The Equations for our eight water tanks.
