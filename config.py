@@ -7,7 +7,7 @@ import math
 
 # Change the variables listed below as required by the experiment
 class initialisationVariables:
-    TANK_ENABLE = [1,2]  # Specifies which equations/tanks we wish to use, remove numbers as needed
+    TANK_ENABLE = [1,2, 3, 4]  # Specifies which equations/tanks we wish to use, remove numbers as needed
     ERROR_TOLERANCE = 0.1                  # Allowable temperature error tolerance
     RUNTIME = 60*60*1                       # Run time of experiment (Is specified in seconds)
     GRAPH_SHOW = False                     # Toggle True/False to show graphical output of temp profile
@@ -26,16 +26,16 @@ def equations(relayID, t):
     t = float(t)  # casting to float (saftey)
 
     if relayID == 1:
-        return 27 + 0.0013*2*t          # equation 1
+        return 22 + 0.001*2*t          # equation 1
 
     elif relayID == 2:
-        return 27 + (5*math.sin(0.0017*t))  # equation 2
+        return 22 + (5*math.sin(0.0008*t))  # equation 2
 
     elif relayID == 3:
-        return 10 - (t / 2)  # equation 3
+        return 22 + 0.001*2*2*t   # equation 3
 
     elif relayID == 4:
-        return 7 + (2 * t)  # equation 4
+        return 22 + (2*math.sin(0.0008*t))  # equation 4
 
     elif relayID == 5:
         return 28 + (t / 2)  # equation 5
@@ -58,8 +58,8 @@ def sensor_ID():
 
     s1 = "28-000006dc6863"
     s2 = "28-000006dc76f3"
-    s3 = None
-    s4 = None
+    s3 = "28-01131b65af91"
+    s4 = "28-02131694dcaa"
     s5 = None
     s6 = None
     s7 = None

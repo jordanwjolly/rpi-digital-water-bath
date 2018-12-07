@@ -26,10 +26,10 @@ def equations(relayID, t):
     t = float(t)  # casting to float (saftey)
 
     if relayID == 1:
-        return 27 + 0.0013*2*t          # equation 1
+        return 22 + 0.001*2*t          # equation 1
 
     elif relayID == 2:
-        return 27 + (10*math.sin(0.0017*t))  # equation 2
+        return 22 + (5*math.sin(0.0008*t))  # equation 2
 
     elif relayID == 3:
         return 10 - (t / 2)  # equation 3
@@ -58,8 +58,8 @@ def sensor_ID():
 
     s1 = "28-000006dc6863"
     s2 = "28-000006dc76f3"
-    s3 = None
-    s4 = None
+    s3 = "28-01131b65af91"
+    s4 = "28-02131694dcaa"
     s5 = None
     s6 = None
     s7 = None
