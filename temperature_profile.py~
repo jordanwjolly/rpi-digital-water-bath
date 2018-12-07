@@ -87,7 +87,6 @@ def main():
     while (t < INITIALISE.RUNTIME): #Is calculated in seconds, range time skip increases based of # of tanks
 
         current_time = time.time() #getting current time for TIME_STEP validation
-        print(current_time)
 
         # Loops through list of controller objects, updates controller, and actuates if needed
         for tank in tank_list:
@@ -153,8 +152,6 @@ def main():
 
         # Updates t based off most current time delta
         t=t+ time_step(current_time)
-        
-	print("EXPERIMENT FINISHED!!")  #Exit message
 	
 	
 	
