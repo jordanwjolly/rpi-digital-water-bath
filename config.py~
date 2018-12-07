@@ -29,7 +29,7 @@ def equations(relayID, t):
         return 27 + 0.0013*2*t          # equation 1
 
     elif relayID == 2:
-        return 27 + (5*math.sin(0.0017*t))  # equation 2
+        return 27 + (10*math.sin(0.0017*t))  # equation 2
 
     elif relayID == 3:
         return 10 - (t / 2)  # equation 3

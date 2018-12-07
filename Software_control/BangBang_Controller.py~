@@ -19,7 +19,6 @@ def CoolerCheck(coolingOn, heatingState, lastCoolerDisableTime, COOLER_RECOVERY_
         if heatingState:
             print('*** Cannot enable cooling if heating is on. Disabling heating first! ***')
             return not coolingOn
-            return not heatingOn #need both heating and cooling to be off
 
         #cannot enable if is in recovery period
         elif int(time.time()) < (lastCoolerDisableTime + COOLER_RECOVERY_TIME):
@@ -49,7 +48,6 @@ def HeatCheck(heatingOn, coolingState, lastHeaterDisableTime, HEATER_RECOVERY_TI
         if coolingState:
             print('*** Cannot enable heating if cooling is on. Disabling cooling first! ***')
             return not heatingOn
-            return not coolingOn #need both heating and cooling to be off
 
         #cannot enable if is in recovery period
         elif int(time.time()) < (lastHeaterDisableTime + HEATER_RECOVERY_TIME):

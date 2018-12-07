@@ -29,10 +29,8 @@ def WTI_logic(enable, DIR, relayID, DUMMY):
 
 #Forcing all relays into starting state
 def WTI_initialse(tank_list, DIR):
-	print("Initially turn all relays off....\n")
 	for relayID in tank_list:
 		disable_relay(DIR, relayID)
-	print('\nRELAY initilisation complete\n****************************************')
 		
 
 def enable_relay(DIR, relayID):

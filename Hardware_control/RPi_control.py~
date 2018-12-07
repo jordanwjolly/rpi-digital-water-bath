@@ -26,5 +26,3 @@ def setupGPIO():
 
     gpio.output(PIN_HEAT, True)
     gpio.output(PIN_COOL, True)
-    
-    print('\nGPIO setup complete\n****************************************')

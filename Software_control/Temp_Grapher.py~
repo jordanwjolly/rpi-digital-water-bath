@@ -12,7 +12,7 @@ def saveCurrentValue(t, Set_Temp, Current_Temp, Relay_ID, Heater_State, Cooler_S
 
 	fields = [Relay_ID]
 	fields.extend([Heater_State])
-	fields.extend([Cooler_State])
+	fields.extend(Cooler_State)
 	fields.extend([t])
 	fields.extend([Set_Temp])
 	fields.extend([Current_Temp])
