@@ -41,12 +41,13 @@ TO GET SOFTWARE RUNNING
 WTI NETWORK POWER SWITCH
 This device is super old, and the standby power battery has stopped working. If the unit is turned off, It is therefore neccesary to redo the networking settings.
 
-Open a serial terminal to COM0, with newline and carrige return used.
+Open a serial terminal (recommend using Arduino IDE Serial Monitor) to USB0, with newline and carrige return used.
+Press 'Enter' key to see options
 Type '/N' to get to network settings.
 type '1' and set the ip address to 192.168.168.168 
 type '2' and set netmask to 255.255.255.0
 Type '/G' to get to general settings
-Type '7' and turn 'command echo' to the off state
+Type '6' and turn 'command echo' to the off state
 '/X' to exit. The device should now be able to be pinged from your pi
 
 STARTING THE PROGRAM
