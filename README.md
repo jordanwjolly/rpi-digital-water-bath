@@ -48,6 +48,7 @@ type '1' and set the ip address to 192.168.168.168
 type '2' and set netmask to 255.255.255.0
 Type '/G' to get to general settings
 Type '6' and turn 'command echo' to the off state
+Type '8', and change the command confirmation to the off state
 '/X' to exit. The device should now be able to be pinged from your pi
 
 STARTING THE PROGRAM
