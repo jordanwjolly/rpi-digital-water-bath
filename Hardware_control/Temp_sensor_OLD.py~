@@ -14,7 +14,7 @@ s4 = "28-02131694dcaa"
 s5 = "28-01131e6b29e7"
 s6 = "28-01131b9be090"
 s7 = "28-0213139f02aa"
-s8= "28-01131bb70b6b"
+s8=None
 
 sensorID=[s1, s2, s3, s4, s5, s6, s7, s8] #Sensor 1 for tank 1, is in the first place etc...
 
