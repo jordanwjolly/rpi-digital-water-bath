@@ -10,67 +10,67 @@ import time  # Time functions
 ########################################################################################################################
 
 # TURNS ON THE COOLER
-def CoolerCheck(coolingOn, heatingState, lastCoolerDisableTime, COOLER_RECOVERY_TIME):
+def CoolerCheck(Cooler_Enable, Heater_State, Last_Cooler_Disable, COOLER_RECOVERY_TIME):
 
     # If we want to change state, double check is valid
-    if coolingOn:
+    if Cooler_Enable:
 
         # Cannot enable heating if A/C is on
-        if heatingState:
+        if Heater_State:
             print('*** Cannot enable cooling if heating is on. Disabling heating first! ***')
-            return not coolingOn
-            return not heatingOn #need both heating and cooling to be off
+            return not Cooler_Enable
+            return not Heater_Enable #need both heating and cooling to be off
 
         #cannot enable if is in recovery period
-        elif int(time.time()) < (lastCoolerDisableTime + COOLER_RECOVERY_TIME):
+        elif int(time.time()) < (Last_Cooler_Disable + COOLER_RECOVERY_TIME):
             print('*** Cannot enable cooling, cooling in recovery ***')
-            return not coolingOn
+            return not Cooler_Enable
 
         print('*** Cooling stays on ***')
-        return coolingOn
+        return Cooler_Enable
 
     # Heating stays off
-    elif not coolingOn:
+    elif not Cooler_Enable:
         print('*** Cooling stays off ***')
-        return coolingOn
+        return Cooler_Enable
 
     #Error handling
     else:
-        print("coolingOn variable is incorrect")
+        print("Cooler_Enable variable is incorrect")
 
 
 # Checks heater state against cooler state, and cooldown period
-def HeatCheck(heatingOn, coolingState, lastHeaterDisableTime, HEATER_RECOVERY_TIME):
+def HeatCheck(Heater_Enable, Cooler_State, Last_Heater_Enable, HEATER_RECOVERY_TIME):
 
     # If we want to change state, double check is valid
-    if heatingOn:
+    if Heater_Enable:
 
         # Cannot enable heating if A/C is on
-        if coolingState:
+        if Cooler_State:
             print('*** Cannot enable heating if cooling is on. Disabling cooling first! ***')
-            return not heatingOn
-            return not coolingOn #need both heating and cooling to be off
+            return not Heater_Enable
+            return not Cooler_Enable #need both heating and cooling to be off
 
         #cannot enable if is in recovery period
-        elif int(time.time()) < (lastHeaterDisableTime + HEATER_RECOVERY_TIME):
+        elif int(time.time()) < (Last_Heater_Enable + HEATER_RECOVERY_TIME):
 
             print('*** Cannot enable heating, heater in recovery ***')
-            return not heatingOn
+            return not Heater_Enable
 
         print('*** Heating stays on ***')
-        return heatingOn
+        return Heater_Enable
 
     # Heating stays off
-    elif not heatingOn:
+    elif not Heater_Enable:
         print('*** Heating stays off ***')
-        return heatingOn
+        return Heater_Enable
     
     # Error handling
     else:
-        print ("heatingOn variable is incorrect")
+        print ("Heater_Enable variable is incorrect")
 
 
-def controller(setTemp, currTemp, coolingOn, heatingOn, threshold):
+def controller(setTemp, currTemp, Cooler_Enable, Heater_Enable, threshold):
 
     hotterThanSet = False
     coolerThanSet = False
@@ -80,16 +80,16 @@ def controller(setTemp, currTemp, coolingOn, heatingOn, threshold):
 
     # CHECKING TO SEE IF TEMP IS ABOVE/BELOW SET POINT
     # COOLER: Cooler is on, it should stay on until it goes past the threshold
-    if (coolingOn and (setTemp < (currTemp + threshold))):
+    if (Cooler_Enable and (setTemp < (currTemp + threshold))):
         hotterThanSet = True
     # COOLER: Cooler is currently off, it should turn on when it hits the threshold
-    if ((not coolingOn) and (setTemp < (currTemp - threshold))):
+    if ((not Cooler_Enable) and (setTemp < (currTemp - threshold))):
         hotterThanSet = True
     # HEATER: Heater is on, it should stay on until it goes past the threshold
-    if (heatingOn and (setTemp > (currTemp - threshold))):
+    if (Heater_Enable and (setTemp > (currTemp - threshold))):
         coolerThanSet = True
     # HEATER: Heater is currently off, it should turn on when it hits the threshold
-    if ((not heatingOn) and (setTemp > (currTemp + threshold))):
+    if ((not Heater_Enable) and (setTemp > (currTemp + threshold))):
         coolerThanSet = True
 
     # TURN THE HEATER/COOLER ON/OFF

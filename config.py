@@ -7,14 +7,14 @@ import math
 
 # Change the variables listed below as required by the experiment
 class initialisationVariables:
-    TANK_ENABLE = [1,2, 3, 4]  # Specifies which equations/tanks we wish to use, remove numbers as needed
+    TANK_ENABLE = [1]  # Specifies which equations/tanks we wish to use, remove numbers as needed
     ERROR_TOLERANCE = 0.1                  # Allowable temperature error tolerance
     RUNTIME = 60*60*1                       # Run time of experiment (Is specified in seconds)
     GRAPH_SHOW = False                     # Toggle True/False to show graphical output of temp profile
-    REFRESH_TIME = 10                        # Refresh rate of system (Seconds)) IS PER TANK
+    REFRESH_TIME = 2                        # Refresh rate of system (Seconds)) IS PER TANK
     COOLER_RECOVERY_TIME = 60               # seconds
     HEATER_RECOVERY_TIME = 10               # seconds
-    DUMMY = False                            # can run on no RPi machine if True
+    DUMMY = True                            # can run on no RPi machine if True
     SENSOR_AVRG = 3                         # number of readings taken per temp sensor and averaged
 
 
@@ -26,7 +26,7 @@ def equations(relayID, t):
     t = float(t)  # casting to float (saftey)
 
     if relayID == 1:
-        return 22 + 0.001*2*t          # equation 1
+        return 40 + 0.001*2*t          # equation 1
 
     elif relayID == 2:
         return 22 + (5*math.sin(0.0008*t))  # equation 2

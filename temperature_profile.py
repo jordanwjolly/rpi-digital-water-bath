@@ -37,15 +37,15 @@ class TankVariables:
         self.Relay_ID = relay_id
 
     ERROR_TOLERANCE = INITIALISE.ERROR_TOLERANCE
-    COOLER_TIME = INITIALISE.COOLER_RECOVERY_TIME
-    HEATER_TIME = INITIALISE.HEATER_RECOVERY_TIME
+    COOLER_RECOVERY_TIME = INITIALISE.COOLER_RECOVERY_TIME
+    HEATER_RECOVERY_TIME = INITIALISE.HEATER_RECOVERY_TIME
     Current_Temp = float(0) # Should have function to retreive most current temp automatically
     Set_Temp = float(0)     # Set by controller
     Heater_State = False    # Current state
     Heater_Enable = False   # Future state
     Cooler_State = False
     Cooler_Enable = False
-    Last_Heater_Disable = 0
+    Last_Heater_Enable = 0
     Last_Cooler_Disable = 0
 
 #Allowing for graceful exit
@@ -103,11 +103,27 @@ def main():
             tank.Heater_Enable, tank.Cooler_Enable = BangBang_Controller.controller(tank.Set_Temp,
                                         tank.Current_Temp, tank.Heater_State, tank.Cooler_State, tank.ERROR_TOLERANCE)
 
+            print "*********************\nAfter bang bang"
+            print tank.Heater_Enable
+            print tank.Heater_State
+            print "*********************"
+            print "*********************"
+            print tank.Last_Heater_Enable
+            print time.time()
+            print "*********************"
+
             # Checks Validity of state change (Based hardware constraints)
             tank.Heater_Enable = BangBang_Controller.HeatCheck(tank.Heater_Enable, tank.Cooler_State,
-                                                              tank.Last_Heater_Disable, tank.HEATER_TIME)
+                                                              tank.Last_Heater_Enable, tank.HEATER_RECOVERY_TIME)
             tank.Cooler_Enable = BangBang_Controller.CoolerCheck(tank.Cooler_Enable, tank.Heater_State,
-                                                                tank.Last_Cooler_Disable, tank.COOLER_TIME)
+                                                                tank.Last_Cooler_Disable, tank.COOLER_RECOVERY_TIME)
+
+            print "*********************\nAfter hardware check"
+            print tank.Heater_Enable
+            print tank.Heater_State
+            print "*********************"
+
+            #Print user output of current temp, heater state, cooler state etc
 
             # Changes state of Heater and actuates (If required)
             if not tank.Heater_State == tank.Heater_Enable:
@@ -115,8 +131,10 @@ def main():
                 WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off
                 tank.Heater_State = tank.Heater_Enable #changing last state heater
 
-                if not tank.Heater_Enable: # updating last disable time
-                    tank.Last_Heater_Disable = time.time()
+                if tank.Heater_Enable and (int(time.time()) > (tank.Last_Heater_Enable + tank.HEATER_RECOVERY_TIME)): # updating last enable time
+                    tank.Last_Heater_Enable = time.time()
+                    print "changed last enable time"
+                    
                 
             # Changes state of Cooler and actuates (If required)
             if not tank.Cooler_State == tank.Cooler_Enable:
