@@ -15,7 +15,7 @@
 import os, time, csv, sys, signal
 #import numpy as np
 from multiprocessing import Process
-from Software_control import BangBang_Controller
+from Software_control import Controller
 from Software_control import Temp_Grapher
 from Hardware_control import WTI_control
 from Hardware_control import Temp_sensor
@@ -64,12 +64,11 @@ def write_stdout(char_to_print):
     sys.stdout.write('\b')
     sys.stdout.write(char_to_print)
 
-
 def time_step(current_time):
     return time.time() - current_time
 
-def print_current_state(Current_Temp, Set_Temp, Heater_State, Cooler_State):
-    print ("Current:" + str(Current_Temp) + " Set-point:" + str(Set_Temp) + " Heating:" + str(Heater_State) + " Cooler:" + str(Cooler_State))
+def print_current_state(Relay_ID, Current_Temp, Set_Temp, Heater_State, Cooler_State):
+    print ('TANK #' + str(Relay_ID)+ ": Curr=" + str(Current_Temp) + " Set=" + str(Set_Temp) + " Heat=" + str(Heater_State) + " Cool=" + str(Cooler_State))
     
 # Main
 def main():
@@ -96,6 +95,8 @@ def main():
     while (t < INITIALISE.RUNTIME): #Is calculated in seconds, range time skip increases based of # of tanks
 
         current_time = time.time() #getting current time for TIME_STEP validation
+        # Print nice output, ready for next graph
+        print("\n#######################################################")
 
         # Loops through list of controller objects, updates controller, and actuates if needed
         for tank in tank_list:
@@ -103,54 +104,31 @@ def main():
             if tank == None: # None exists for all non-tanks
                 continue
 
-             # Print nice output, ready for next graph
-            print("\n#######################################################")
-
             # Updates current temperature
             tank.Current_Temp = Temp_sensor.current_temp(tank.Relay_ID)
             tank.Set_Temp = config.equations(tank.Relay_ID, t)
 
             # Checks state, to see if state change required
-            print('Testing Tank: ' + str(tank.Relay_ID))
-            tank.Heater_Enable, tank.Cooler_Enable = BangBang_Controller.controller(tank.Set_Temp,
+            tank.Heater_Enable, tank.Cooler_Enable = Controller.controller(tank.Set_Temp,
                                         tank.Current_Temp, tank.Heater_State, tank.Cooler_State, tank.ERROR_TOLERANCE)
 
-            # print "*********************\nAfter bang bang"
-            # print tank.Heater_Enable
-            # print tank.Heater_State
-            # print "*********************"
-
-            # Checks Validity of state change (Based hardware constraints)
-            Heater_Check = BangBang_Controller.HeaterCheck(tank.Heater_Enable, tank.Cooler_State,
-                                                              tank.Last_Heater_Enable, tank.HEATER_RECOVERY_TIME)
-            if Heater_Check:
+            # Checks Validity of state change (based off hardware constraints)
+            if Controller.HeaterCheck(tank.Heater_Enable, tank.Cooler_State, tank.Last_Heater_Enable, tank.HEATER_RECOVERY_TIME):
                 tank.Heater_Enable = not tank.Heater_Enable
 
-            Cooler_Check = BangBang_Controller.CoolerCheck(tank.Cooler_Enable, tank.Heater_State,
-                                                                tank.Last_Cooler_Disable, tank.COOLER_RECOVERY_TIME)
-            if Cooler_Check:
+            if Controller.CoolerCheck(tank.Cooler_Enable, tank.Heater_State, tank.Last_Cooler_Disable, tank.COOLER_RECOVERY_TIME):
                 tank.Cooler_Enable = not tank.Cooler_Enable
 
-            # print "*********************\nAfter hardware check"
-            # print tank.Heater_Enable
-            # print tank.Heater_State
-            # print "*********************"
-
-            #Print user output of current temp, heater state, cooler state etc
-
-            # Changes state of Heater and actuates (If required)
+            # Controls hardware relays connected to the WTI ethernet switch
             if not tank.Heater_State == tank.Heater_Enable:
-                
-                if not tank.Heater_State and tank.Heater_Enable:# or Heater_Check): #and(int(time.time()) - tank.Last_Heater_Enable) > tank.HEATER_RECOVERY_TIME: # updating last enable time
-                    tank.Last_Heater_Enable = time.time()
-                    print "Updated last heater enable time"
 
                 WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off
+
+                if not tank.Heater_State and tank.Heater_Enable: # updating last enable time
+                    tank.Last_Heater_Enable = time.time()
+
                 tank.Heater_State = tank.Heater_Enable #changing last state heater
 
-                
-                    
-                
             # Changes state of Cooler and actuates (If required)
             if not tank.Cooler_State == tank.Cooler_Enable:
                 
@@ -162,7 +140,7 @@ def main():
                     tank.Last_Cooler_Disable = time.time()
 
             # Display current state
-            print_current_state(tank.Current_Temp, tank.Set_Temp, tank.Heater_State, tank.Cooler_State)
+            print_current_state(tank.Relay_ID, tank.Current_Temp, tank.Set_Temp, tank.Heater_State, tank.Cooler_State)
 
             #Saves current values for tank 'x' to csv
             Temp_Grapher.saveCurrentValue(t, tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, tank.Heater_State, tank.Cooler_State, GRAPH_DIR)
