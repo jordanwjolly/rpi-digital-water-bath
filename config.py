@@ -13,7 +13,7 @@ class initialisationVariables:
     GRAPH_SHOW = False                      # Toggle True/False to show graphical output of temp profile
     REFRESH_TIME = 20                       # Refresh rate of system (Seconds)) IS PER TANK
     COOLER_RECOVERY_TIME = 60               # seconds
-    HEATER_RECOVERY_TIME = 20               # seconds
+    HEATER_RECOVERY_TIME = 1000               # seconds
     DUMMY = False                           # can run on no RPi machine if True
     SENSOR_AVRG = 3                         # number of readings taken per temp sensor and averaged
 
