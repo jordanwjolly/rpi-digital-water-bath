@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 def saveCurrentState(t, Set_Temp, Current_Temp, Relay_ID, Heater_State, Heater_Enable, Last_Heater_Enable,
 	Cooler_State, Cooler_Enable, Last_Cooler_Disable, GRAPH_DIR):
 
+	if not os.path.exists(GRAPH_DIR):
+	    os.makedirs(GRAPH_DIR)
+
 	GRAPH_NAME = "Tank_" + str(Relay_ID)
 	GRAPH_FILE = GRAPH_DIR + GRAPH_NAME + ".csv"
 
@@ -21,6 +24,8 @@ def saveCurrentState(t, Set_Temp, Current_Temp, Relay_ID, Heater_State, Heater_E
 	fields.extend([Cooler_State])
 	fields.extend([Cooler_Enable])
 	fields.extend([Last_Cooler_Disable])
+	fields.extend([time.time()])
+	
 	#print(fields)
 	with open(GRAPH_FILE, 'a+') as f:
 		writer = csv.writer(f)
