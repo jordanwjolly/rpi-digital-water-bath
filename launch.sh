@@ -4,4 +4,4 @@
 
 sleep 10
 
-xterm -e python temperature_profile.py&
+xterm -e python main.py&

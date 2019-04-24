@@ -5,17 +5,22 @@ import matplotlib.pyplot as plt
 
 
 # saves the current RelayID, temps, and time in one .csv per tank
-def saveCurrentValue(t, Set_Temp, Current_Temp, Relay_ID, Heater_State, Cooler_State, GRAPH_DIR):
+def saveCurrentState(t, Set_Temp, Current_Temp, Relay_ID, Heater_State, Heater_Enable, Last_Heater_Enable,
+	Cooler_State, Cooler_Enable, Last_Cooler_Disable, GRAPH_DIR):
 
 	GRAPH_NAME = "Tank_" + str(Relay_ID)
 	GRAPH_FILE = GRAPH_DIR + GRAPH_NAME + ".csv"
 
 	fields = [Relay_ID]
-	fields.extend([Heater_State])
-	fields.extend([Cooler_State])
 	fields.extend([t])
 	fields.extend([Set_Temp])
 	fields.extend([Current_Temp])
+	fields.extend([Heater_State])
+	fields.extend([Heater_Enable])
+	fields.extend([Last_Heater_Enable])
+	fields.extend([Cooler_State])
+	fields.extend([Cooler_Enable])
+	fields.extend([Last_Cooler_Disable])
 	#print(fields)
 	with open(GRAPH_FILE, 'a+') as f:
 		writer = csv.writer(f)

@@ -33,31 +33,21 @@ def controller(setTemp, currTemp, Cooler_Enable, Heater_Enable, threshold):
 
     # TURN THE HEATER/COOLER ON/OFF
     if (hotterThanSet and coolerThanSet):
-        # print("Current: " + str(currTemp) + " Set-point: " + str(setTemp))
-        # print('*** Error: Outside of both ranges somehow.')
         return heating_state, cooling_state
 
     if ((not hotterThanSet) and (not coolerThanSet)):
-        # print('Temperature is in range, no actuation required')
-        # print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF Cooler: OFF")
 
         heating_state = False
         cooling_state = False
         return heating_state, cooling_state
 
     elif (hotterThanSet):
-        # print('Water temperature is too warm')
-        # print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: OFF Cooler: ON")
-
         heating_state = False
         cooling_state = True
         return heating_state, cooling_state
 
 
     elif (coolerThanSet):
-        # print('Water temperature is too cold')
-        # print("Current: " + str(currTemp) + " Set-point: " + str(setTemp) + " Heating: ON Cooler: OFF")
-
         heating_state = True
         cooling_state = False
         return heating_state, cooling_state
@@ -85,12 +75,11 @@ def HeaterCheck(Heater_Enable, Cooler_State, Last_Heater_Enable, HEATER_RECOVERY
                 print('________Cannot enable heating, heater in timeout ***')
                 return not Heater_Check
 
-        #print('*** Heating stays on ***')
         return Heater_Check
 
     # Heating stays off
     elif not Heater_Enable:
-        #print('*** Heating stays off ***')
+        
         return Heater_Check
     
     # Error handling
@@ -115,12 +104,11 @@ def CoolerCheck(Cooler_Enable, Heater_State, Last_Cooler_Disable, COOLER_RECOVER
             print('*** Cannot enable cooling, cooling in recovery ***')
             return not Cooler_Check
 
-        #print('*** Cooling stays on ***')
         return Cooler_Check
 
     # Heating stays off
     elif not Cooler_Enable:
-        #print('*** Cooling stays off ***')
+
         return Cooler_Check
 
     #Error handling

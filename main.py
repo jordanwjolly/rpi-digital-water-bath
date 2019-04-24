@@ -16,7 +16,7 @@ import os, time, csv, sys, signal
 #import numpy as np
 from multiprocessing import Process
 from Software_control import Controller
-from Software_control import Temp_Grapher
+from Software_control import Data_logging
 from Hardware_control import WTI_control
 from Hardware_control import Temp_sensor
 import config
@@ -24,7 +24,7 @@ import config
 # Static Variables
 DIR = os.path.dirname(os.path.realpath(__file__))
 CURRENT_TEMP_FILE = DIR + '/Hardware_control/SensorValues.txt'
-GRAPH_DIR = DIR + '/Graph_data/'
+GRAPH_DIR = DIR + '/Data_Logging/'
 INITIALISE = config.initialisationVariables()    # Hack to bring vars in from config. breaks loop if config incorrect
 
 if not INITIALISE.DUMMY:
@@ -50,7 +50,6 @@ class TankVariables:
 
 #Allowing for graceful exit
 def sigterm_handler(signal, frame):
-    # save the state here or do whatever you want
     print('Exiting because of SIGTERM')
     sys.exit(0)
 
@@ -143,11 +142,12 @@ def main():
             print_current_state(tank.Relay_ID, tank.Current_Temp, tank.Set_Temp, tank.Heater_State, tank.Cooler_State)
 
             #Saves current values for tank 'x' to csv
-            Temp_Grapher.saveCurrentValue(t, tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, tank.Heater_State, tank.Cooler_State, GRAPH_DIR)
+            Data_logging.saveCurrentState(t, tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, tank.Heater_State, tank.Heater_Enable, tank.Last_Heater_Enable,
+                tank.Cooler_State, tank.Cooler_Enable, tank.Last_Cooler_Disable, GRAPH_DIR)
 
             # update GUI graph results
             if INITIALISE.GRAPH_SHOW:
-                Temp_Grapher.updateGraph(GRAPH_DIR, tank.Relay_ID)
+                Data_logging.updateGraph(GRAPH_DIR, tank.Relay_ID)
                 print("WOW...Graph")
          
         spinner=spinning_cursor() 
