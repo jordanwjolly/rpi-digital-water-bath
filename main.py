@@ -121,17 +121,18 @@ def main():
             # Controls hardware relays connected to the WTI ethernet switch
             if not tank.Heater_State == tank.Heater_Enable:
 
-                WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off
+                #WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off
+                tank.Heater_State = Relay_control.Relay_logic(tank.Heater_Enable, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off. Returns current state of relay
 
                 if not tank.Heater_State and tank.Heater_Enable: # updating last enable time
                     tank.Last_Heater_Enable = time.time()
 
                 tank.Heater_State = tank.Heater_Enable #changing last state heater
 
-            # Changes state of Cooler and actuates (If required)
+            # Changes state of Cooler and actuates (Actuator implementation NOT IMPLEMENTED)
             if not tank.Cooler_State == tank.Cooler_Enable:
                 
-                print("IF WE HAD A COOLER, I WOULD CHANGE THE STATE NOW")
+                #print("IF WE HAD A COOLER, I WOULD CHANGE THE STATE NOW")
                 # WTI_control.WTI.logic(tank.Cooler_Enable, DIR, tank.Relay_ID,  DUMMY) #This will change a relay
                 tank.Cooler_State = tank.Cooler_Enable #Updating last state of cooler
                 

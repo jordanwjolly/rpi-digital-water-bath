@@ -2,7 +2,7 @@
 
 import subprocess
 import time
-
+import requests
 
 # Contains the python script to run shell scripts
 # Should try: to run script, if fails, return false
@@ -41,7 +41,6 @@ def enable_relay(DIR, relayID):
     	return False
     	
     # enable heating
-    print(relayID)
     try:
         subprocess.Popen([DIR + "/Hardware_control/WTI_on.sh", str(relayID)])
 
