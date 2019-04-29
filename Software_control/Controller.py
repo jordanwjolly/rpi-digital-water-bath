@@ -62,17 +62,17 @@ def HeaterCheck(Heater_Enable, Cooler_State, Last_Heater_Enable, HEATER_RECOVERY
 
         # Cannot enable heating if cooling is on
         if Cooler_State:
-            print('*** Cannot enable heating if cooling is on! ***')
+            print('---------Cannot enable heating, Cooling is on---------')
             return not Heater_Check
 
         #cannot enable if is in recovery period
         elif ((time.time() - Last_Heater_Enable) > HEATER_RECOVERY_TIME) and Last_Heater_Enable: #checking last heater enable for edge case of initialisation to '0'
 
             if ((time.time() - Last_Heater_Enable) > HEATER_RECOVERY_TIME*2):
-                print('________Enabling Heating, Heater timeout period over! ***')
+                print('---------Enabling Heating, Heater timeout period over---------')
                 return Heater_Check
             else:
-                print('________Cannot enable heating, heater in timeout ***')
+                print('---------Disabling heating, Heater in timeout---------')
                 return not Heater_Check
 
         return Heater_Check
@@ -96,12 +96,12 @@ def CoolerCheck(Cooler_Enable, Heater_State, Last_Cooler_Disable, COOLER_RECOVER
 
         # Cannot enable heating if cooling is on
         if Heater_State:
-            print('*** Cannot enable cooling if heating is on! ***')
+            print('---------Cannot enable cooling, heating is on---------')
             return not Cooler_Check
 
         #cannot enable if is in recovery period
         elif int(time.time()) < (Last_Cooler_Disable + COOLER_RECOVERY_TIME):
-            print('*** Cannot enable cooling, cooling in recovery ***')
+            print('---------Disable cooling, cooling in recovery---------')
             return not Cooler_Check
 
         return Cooler_Check

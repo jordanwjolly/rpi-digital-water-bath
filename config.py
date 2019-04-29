@@ -11,10 +11,10 @@ class initialisationVariables:
     ERROR_TOLERANCE = 0.1                   # Allowable temperature error tolerance
     RUNTIME = 60*60*1                       # Run time of experiment (Is specified in seconds)
     GRAPH_SHOW = False                      # Toggle True/False to show graphical output of temp profile
-    REFRESH_TIME = 20                       # Refresh rate of system (Seconds)) IS PER TANK
+    REFRESH_TIME = 0.2                       # Refresh rate of system (Seconds)) IS PER TANK
     COOLER_RECOVERY_TIME = 60               # seconds
-    HEATER_RECOVERY_TIME = 1000               # seconds
-    DUMMY = False                           # can run on no RPi machine if True
+    HEATER_RECOVERY_TIME = 9               # seconds
+    DUMMY = True                           # can run on no RPi machine if True
     SENSOR_AVRG = 3                         # number of readings taken per temp sensor and averaged
 
 

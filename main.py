@@ -17,7 +17,8 @@ import os, time, csv, sys, signal
 from multiprocessing import Process
 from Software_control import Controller
 from Software_control import Data_logging
-from Hardware_control import WTI_control
+#from Hardware_control import WTI_control
+from Hardware_control import Relay_control
 from Hardware_control import Temp_sensor
 import config
 
@@ -66,8 +67,8 @@ def write_stdout(char_to_print):
 def time_step(current_time):
     return time.time() - current_time
 
-def print_current_state(Relay_ID, Current_Temp, Set_Temp, Heater_State, Cooler_State):
-    print ('TANK #' + str(Relay_ID)+ ": Curr=" + str(Current_Temp) + " Set=" + str(Set_Temp) + " Heat=" + str(Heater_State) + " Cool=" + str(Cooler_State))
+def printCurrentState(Relay_ID, Current_Temp, Set_Temp, Heater_State, Cooler_State):
+    print ('TANK #' + str(Relay_ID)+ ": Curr=" + "{:.4f}".format(Current_Temp) + " Set=" + "{:.4f}".format(Set_Temp) + " Heat=" + str(Heater_State) + " Cool=" + str(Cooler_State))
     
 # Main
 def main():
@@ -84,7 +85,7 @@ def main():
     #Sets up GPIO pins for pi. Forces all relays into off state. SHOULD START TEMP SENSOR HERE
     if not INITIALISE.DUMMY:
         RPi_control.setupGPIO()
-        WTI_control.WTI_initialse(INITIALISE.TANK_ENABLE, DIR)#Need to initialise all relays into OFF state first        
+        Relay_control.RelayInitialse(INITIALISE.TANK_ENABLE)#Need to initialise all relays into OFF state first        
         #Process(target=Temp_Sensor.start_temp_sensor(config.sensor_ID), args=(config.sensor_ID)).run() #starts temp sensor process
 
     # MAIN Super Loop
@@ -96,6 +97,7 @@ def main():
         current_time = time.time() #getting current time for TIME_STEP validation
         # Print nice output, ready for next graph
         print("\n#######################################################")
+        print "Runtime: " + "{:.4f}".format(t) + " Secs"
 
         # Loops through list of controller objects, updates controller, and actuates if needed
         for tank in tank_list:
@@ -122,12 +124,13 @@ def main():
             if not tank.Heater_State == tank.Heater_Enable:
 
                 #WTI_control.WTI_logic(tank.Heater_Enable, DIR, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off
-                tank.Heater_State = Relay_control.Relay_logic(tank.Heater_Enable, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off. Returns current state of relay
+                Relay_check = Relay_control.relayLogic(tank.Heater_Enable, tank.Relay_ID, INITIALISE.DUMMY) #Turn the relay on/off. Returns current state of relay
 
                 if not tank.Heater_State and tank.Heater_Enable: # updating last enable time
                     tank.Last_Heater_Enable = time.time()
 
-                tank.Heater_State = tank.Heater_Enable #changing last state heater
+                #tank.Heater_State = tank.Heater_Enable #changing last state heater 
+                tank.Heater_State = Relay_check #changing last state heater 
 
             # Changes state of Cooler and actuates (Actuator implementation NOT IMPLEMENTED)
             if not tank.Cooler_State == tank.Cooler_Enable:
@@ -140,7 +143,7 @@ def main():
                     tank.Last_Cooler_Disable = time.time()
 
             # Display current state
-            print_current_state(tank.Relay_ID, tank.Current_Temp, tank.Set_Temp, tank.Heater_State, tank.Cooler_State)
+            printCurrentState(tank.Relay_ID, tank.Current_Temp, tank.Set_Temp, tank.Heater_State, tank.Cooler_State)
 
             #Saves current values for tank 'x' to csv
             Data_logging.saveCurrentState(t, tank.Set_Temp, tank.Current_Temp, tank.Relay_ID, tank.Heater_State, tank.Heater_Enable, tank.Last_Heater_Enable,
