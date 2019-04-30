@@ -11,17 +11,17 @@ import os
 import time
 import sys
 import signal
-from Software_control import Controller
-from Software_control import Data_logging
+from software_control import controller
+from software_control import data_logging
 # from Hardware_control import WTI_control
-from Hardware_control import Relay_control
-from Hardware_control import Temp_sensor
+from hardware_control import relay_control
+from hardware_control import temp_sensor
 import config
 
 # Static Variables
 DIR = os.path.dirname(os.path.realpath(__file__))
-CURRENT_TEMP_FILE = DIR + '/Hardware_control/SensorValues.txt'
-GRAPH_DIR = DIR + '/Data_Logging/'
+CURRENT_TEMP_FILE = DIR + '/data_logging/SensorValues.txt'
+GRAPH_DIR = DIR + '/data_logging/'
 INITIALISE = config.initialisation_variables()
 
 if not INITIALISE.DUMMY:
@@ -93,19 +93,24 @@ def main():
     for indx, Tank_ID in enumerate(INITIALISE.TANK_ENABLE):
         tank_list[indx] = TankVariables(Tank_ID)
 
-    # Sets up GPIO pins for pi. Forces all relays into off state.
+    # Hardware setup. GPIO pins for pi. Relays into off state. min refresh_time
+    refresh_time = INITIALISE.REFRESH_TIME
     if not INITIALISE.DUMMY:
         RPi_control.setupGPIO()
-        Relay_control.RelayInitialse(INITIALISE.TANK_ENABLE)
+        relay_control.RelayInitialse(INITIALISE.TANK_ENABLE)
+
+        if refresh_time < 10:  # Double check that at least 10 seconds
+            print(" REFRESH_TIME variable is too low. Default = 10 secs")
+            refresh_time = 10
 
     # MAIN Super Loop
-    TIME_STEP_THRESH = INITIALISE.REFRESH_TIME * len(INITIALISE.TANK_ENABLE)
+    TIME_STEP_THRESH = refresh_time * len(INITIALISE.TANK_ENABLE)
     t = 0
 
     while (t < INITIALISE.RUNTIME):  # Uses secs, range time > with # of tanks
 
         current_time = time.time()  # for time step
-        # Print nice output, ready for next graph
+
         print("\n#######################################################")
         print "Runtime: " + "{:.4f}".format(t) + " Secs"
 
@@ -116,22 +121,22 @@ def main():
                 continue
 
             # Updates current temperature
-            tank.Current_Temp = Temp_sensor.current_temp(tank.Relay_ID)
+            tank.Current_Temp = temp_sensor.current_temp(tank.Relay_ID)
             tank.Set_Temp = config.equations(tank.Relay_ID, t)
 
             # Checks state, to see if state change required
-            tank.Heater_Enable, tank.Cooler_Enable = Controller.controller(
+            tank.Heater_Enable, tank.Cooler_Enable = controller.controller(
                 tank.Set_Temp, tank.Current_Temp, tank.Heater_State,
                 tank.Cooler_State, tank.ERROR_TOLERANCE)
 
             # Checks Validity of state change (based off hardware constraints)
-            if Controller.HeaterCheck(
+            if controller.HeaterCheck(
                     tank.Heater_Enable, tank.Cooler_State,
                     tank.Last_Heater_Enable, tank.HEATER_RECOVERY_TIME):
 
                 tank.Heater_Enable = not tank.Heater_Enable
 
-            if Controller.CoolerCheck(
+            if controller.CoolerCheck(
                     tank.Cooler_Enable, tank.Heater_State,
                     tank.Last_Cooler_Disable, tank.COOLER_RECOVERY_TIME):
 
@@ -141,7 +146,7 @@ def main():
             if not tank.Heater_State == tank.Heater_Enable:
 
                 # Turn the relay on/off. Returns current state of relay
-                Relay_check = Relay_control.relayLogic(
+                Relay_check = relay_control.relayLogic(
                     tank.Heater_Enable, tank.Relay_ID, INITIALISE.DUMMY)
 
                 if not tank.Heater_State and tank.Heater_Enable:
@@ -155,7 +160,7 @@ def main():
             if not tank.Cooler_State == tank.Cooler_Enable:
 
                 # # Turn the relay on/off. Returns current state of relay
-                # Relay_check = Relay_control.relayLogic(
+                # Relay_check = relay_control.relayLogic(
                 #     tank.Heater_Enable, tank.Relay_ID, INITIALISE.DUMMY)
 
                 # Updating last state of cooler
@@ -170,7 +175,7 @@ def main():
                 tank.Heater_State, tank.Cooler_State)
 
             # Saves current values for tank 'x' to csv
-            Data_logging.saveCurrentState(
+            data_logging.saveCurrentState(
                 t, tank.Set_Temp, tank.Current_Temp, tank.Relay_ID,
                 tank.Heater_State, tank.Heater_Enable,
                 tank.Last_Heater_Enable, tank.Cooler_State,
@@ -179,12 +184,13 @@ def main():
 
             # update GUI graph results
             if INITIALISE.GRAPH_SHOW:
-                Data_logging.updateGraph(GRAPH_DIR, tank.Relay_ID)
+                data_logging.updateGraph(GRAPH_DIR, tank.Relay_ID)
                 print("WOW...Graph")
 
-        spinner = spinning_cursor()
-
+        # Time delay + Aesthetic stuff at end of file :D
         TIME_STEP = time_step(current_time)
+
+        spinner = spinning_cursor()
 
         while TIME_STEP < TIME_STEP_THRESH:
             time. sleep(0.1)

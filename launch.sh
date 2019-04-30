@@ -1,6 +1,6 @@
 #!/bin/bash
 
-(cd Hardware_control/ && xterm -e python Temp_sensor_OLD.py&)
+(cd hardware_control/ && xterm -e python temp_sensor.py&)
 
 sleep 10
 

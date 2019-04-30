@@ -15,8 +15,8 @@ class initialisation_variables:
     REFRESH_TIME = 0.2  # Refresh rate of system (Seconds)) IS PER TANK
     COOLER_RECOVERY_TIME = 60  # seconds
     HEATER_RECOVERY_TIME = 20  # seconds
-    DUMMY = True  # can run on no RPi machine if True
     SENSOR_AVRG = 3  # num of readings per sensor for avr
+    DUMMY = True  # can run on no RPi machine if True
 
 
 # The Equations for our eight water tanks.
@@ -57,7 +57,7 @@ def equations(relayID, t):
 # This function returns the hardcoded addresses of the temperature sensors
 # NOTE: keeping with convention, index starts at '1'.
 # Sensor 1 for tank 1, is in the first place etc...
-def sensor_ID():
+class sensor_ID:
 
     s1 = "28-000006dc6863"
     s2 = "28-000006dc76f3"
@@ -66,7 +66,4 @@ def sensor_ID():
     s5 = "28-01131e6b29e7"
     s6 = "28-01131b9be090"
     s7 = "28-0213139f02aa"
-    s8 = None
-
-    sensorID = [s1, s2, s3, s4, s5, s6, s7, s8]
-    return sensorID
+    s8= "28-01131bb70b6b"
