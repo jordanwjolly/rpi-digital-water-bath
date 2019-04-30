@@ -38,9 +38,10 @@ Notes down the sensor ID, physically labels the sensor with a number 1-8, and th
 
 
 STARTING THE PROGRAM
+
 Open up a terminal on the raspberry pi.
 
-	change directories "cd /RPiAquariumTempController"
+	change directories "cd /RPiTempController"
 
 	type "./launch.sh"
 
