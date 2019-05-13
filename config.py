@@ -8,15 +8,15 @@ import math
 
 # Change the variables listed below as required by the experiment
 class initialisation_variables:
-    TANK_ENABLE = [1, 2, 3, 4, 5, 6, 7, 8]  # Specifies selected tanks
+    TANK_ENABLE = [1, 2, 3, 4]  # Specifies selected tanks
     ERROR_TOLERANCE = 0.1  # Allowable temperature error tolerance
     RUNTIME = 60 * 60 * 1  # Run time of experiment (seconds)
     GRAPH_SHOW = False  # NOT IMPLEMENTED
     REFRESH_TIME = 0.2  # Refresh rate of system (Seconds)) IS PER TANK
     COOLER_RECOVERY_TIME = 60  # seconds
-    HEATER_RECOVERY_TIME = 20  # seconds
+    HEATER_RECOVERY_TIME = 10000  # seconds
     SENSOR_AVRG = 3  # num of readings per sensor for avr
-    DUMMY = True  # can run on no RPi machine if True
+    DUMMY = False  # can run on no RPi machine if True
 
 
 # The Equations for our eight water tanks.

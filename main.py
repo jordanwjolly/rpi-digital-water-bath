@@ -25,7 +25,7 @@ GRAPH_DIR = DIR + '/data_logging/'
 INITIALISE = config.initialisation_variables()
 
 if not INITIALISE.DUMMY:
-    from Hardware_control import RPi_control
+    from hardware_control import RPi_control
 
 
 # Class which holds all temps/states/times
@@ -99,9 +99,9 @@ def main():
         RPi_control.setupGPIO()
         relay_control.RelayInitialse(INITIALISE.TANK_ENABLE)
 
-        if refresh_time < 10:  # Double check that at least 10 seconds
-            print(" REFRESH_TIME variable is too low. Default = 10 secs")
-            refresh_time = 10
+        if refresh_time < 5:  # Double check that at least 10 seconds
+            print(" REFRESH_TIME variable is too low. Default = 5 secs")
+            refresh_time = 5
 
     # MAIN Super Loop
     TIME_STEP_THRESH = refresh_time * len(INITIALISE.TANK_ENABLE)

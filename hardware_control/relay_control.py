@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import requests
+import time
 
 
 # If enable is true, turn on relay
@@ -20,9 +21,9 @@ def relayLogic(enable, relayID, DUMMY):
 
         else:
             enableRelay(relayID)
-
+            time.sleep(1)
             # Checking hardware to validate caommand
-            if checkState(relayID):
+            if True: #checkState(relayID):
                 relayPrintState(enable, relayID)
 
             else:  # Failed to turn on relay
@@ -40,8 +41,9 @@ def relayLogic(enable, relayID, DUMMY):
         else:
 
             disableRelay(relayID)  # Disabling relay
+            time.sleep(1)
 
-            if checkState(relayID):
+            if False: #checkState(relayID):
 
                 enable = not enable
                 print("ERROR")
@@ -57,16 +59,8 @@ def relayLogic(enable, relayID, DUMMY):
 def RelayInitialse(tank_list):
 
     print("Initially turn all relays off....\n")
-    headers = {'X-CSRF': 'x', }
-    data = {'value': 'true'}
-    auth = ('admin', '1234')
-
-    r = requests.put(
-        'http://192.168.0.100/restapi/relay/outlets/all;/state/',
-        headers=headers, data=data, auth=auth)
-
-	# for relayID in tank_list:
-	#    disableRelay(DIR, relayID)
+    for relayID in tank_list:
+	    disableRelay(relayID)
 
     print('\nRELAY initilisation complete\n****************************************')
 
@@ -76,17 +70,9 @@ def enableRelay(relayID):
     if relayID is None:
         return False
 
-    relayID = relayID - 1  # hack moving back to base zero for
-
-    headers = {'X-CSRF': 'x', }  # not sure what this is
-    data = {'value': 'true'}   # true for enable
-    auth = ('admin', '1234')
-
     # enable relay
     try:
-        r = requests.put('http://192.168.0.100/restapi/relay/outlets/' +
-            str(relayID) + '/state/', headers=headers, data=data, auth=auth)
-
+        r = requests.get('http://192.168.0.100/outlet?'+str(relayID) + '=ON',  auth=('admin', '1234'))     
     except:
         return False
 
@@ -96,16 +82,9 @@ def disableRelay(relayID):
     if relayID is None:
         return False
 
-    relayID = relayID - 1  # hack moving back to base zero for
-
-    headers = {'X-CSRF': 'x', }  # not sure what this is
-    data = {'value': 'false'}   # false for disable
-    auth = ('admin', '1234')
-
     # disable relay
     try:
-        r = requests.put('http://192.168.0.100/restapi/relay/outlets/' +
-            str(relayID) + '/state/', headers=headers, data=data, auth=auth)
+        r = requests.get('http://192.168.0.100/outlet?'+str(relayID) + '=OFF',  auth=('admin', '1234'))     
 
     except:
         return False
