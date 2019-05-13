@@ -2,6 +2,6 @@
 
 (cd hardware_control/ && xterm -e python temp_sensor.py&)
 
-sleep 10
+sleep 15
 
 xterm -e python main.py&
