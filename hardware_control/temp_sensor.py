@@ -90,7 +90,7 @@ def write_current(temp):
 # ###MAIN CODE#########
 def main(sensorVAL, DUMMY):
     # First try to get the device file
-    print('Finding sensor device file...\n')
+    print('Starting Temp sensor...\n')
 
     #sensorVAL = np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float)
     #sensorVAL.fill(np.nan)
@@ -102,7 +102,7 @@ def main(sensorVAL, DUMMY):
 
     while (True):
 
-        print("\n#######################################################")
+        #print("\n#######################################################")
 
         if not DUMMY:
 
@@ -114,13 +114,13 @@ def main(sensorVAL, DUMMY):
                 try:
                     avg_temp = get_average_temp(device_file)
                 except KeyboardInterrupt:
-                    break;
+                    break
                 except Exception as e:
-                    print('Error getting temp reading from SENSOR ' + str(index) + ': ' + str(e))
+                    #print('Error getting temp reading from SENSOR ' + str(index) + ': ' + str(e))
                     continue;
 
-                print('\nCurrent Temp of SENSOR ' + str(index + 1) + ', sensor ID: ' + sensor)
-                print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp))
+                #print('\nCurrent Temp of SENSOR ' + str(index + 1) + ', sensor ID: ' + sensor)
+                #print('({:d}) {:1.3f} C'.format(int(time.time()), avg_temp))
                 sensorVAL[index] = avg_temp
 
 
@@ -132,7 +132,7 @@ def main(sensorVAL, DUMMY):
         if DUMMY:
             for i in range(len(sensorVAL)):
                 sensorVAL[i] = sensorVAL[i] + 1
-            time.sleep(3)
+            time.sleep(1)
 
 
         time.sleep(READ_DELAY)

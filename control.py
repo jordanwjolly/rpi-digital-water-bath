@@ -11,6 +11,8 @@ import os
 import time
 import sys
 import signal
+import multiprocessing
+import numpy
 from software_control import controller
 from software_control import data_logging
 # from Hardware_control import WTI_control
@@ -78,13 +80,13 @@ def printCurrentState(
 
 
 # Main
-def main():
-
-    # Registering Handler
-    signal.signal(signal.SIGTERM, sigterm_handler)
+def main(current_temp):
 
     # initialising each Tank object based of user input
     tank_list = [None, None, None, None, None, None, None, None]
+
+    # Registering Handler
+    signal.signal(signal.SIGTERM, sigterm_handler)
 
     print(
         "\nRUNNING PROGRAM WITH FOLLOWING TANKS: " +
@@ -97,7 +99,7 @@ def main():
     refresh_time = INITIALISE.REFRESH_TIME
     if not INITIALISE.DUMMY:
         RPi_control.setupGPIO()
-        #relay_control.RelayInitialse(INITIALISE.TANK_ENABLE)
+        relay_control.RelayInitialse(INITIALISE.TANK_ENABLE)
 
         if refresh_time < 5:  # Double check that at least 10 seconds
             print(" REFRESH_TIME variable is too low. Default = 5 secs")
@@ -110,6 +112,7 @@ def main():
     while (t < INITIALISE.RUNTIME):  # Uses secs, range time > with # of tanks
 
         current_time = time.time()  # for time step
+        #current_temp = conn.recv()  # current temp
 
         print("\n#######################################################")
         print "Runtime: " + "{:.4f}".format(t) + " Secs"
@@ -121,7 +124,7 @@ def main():
                 continue
 
             # Updates current temperature
-            tank.Current_Temp = temp_sensor.current_temp(tank.Relay_ID)
+            tank.Current_Temp = current_temp[tank.Relay_ID-1] # minus 1
             tank.Set_Temp = config.equations(tank.Relay_ID, t)
 
             # Checks state, to see if state change required
@@ -184,7 +187,7 @@ def main():
 
             # update GUI graph results
             if INITIALISE.GRAPH_SHOW:
-                data_logging.updateGraph(GRAPH_DIR, tank.Relay_ID)
+                #data_logging.updateGraph(GRAPH_DIR, tank.Relay_ID)
                 print("WOW...Graph")
 
         # Time delay + Aesthetic stuff at end of file :D
@@ -200,6 +203,7 @@ def main():
 
         # Updates t based off most current time delta
         t = t + time_step(current_time)
+
 
 
 ####################################
