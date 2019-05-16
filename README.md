@@ -1,6 +1,6 @@
 SUMMARY
 
-This is a basic bang-bang temperature controller used for maintaining desired tempreatures in up to 8 seperate aquatic environments simultaneously.
+This is a basic bang-bang temperature controller used for maintaining desired temperatures in up to 8 seperate aquatic environments simultaneously.
 It can be used to both heat, and cool an environment based off a desired temperature profile curve.
 
 The system uses the following Hardware:
@@ -43,6 +43,6 @@ Open up a terminal on the raspberry pi.
 
 	change directories "cd /RPiTempController"
 
-	type "./launch.sh"
-
-...sit back, relax, and watch those temperature controlled aquariums look after your aqautic animals in style
+	type "python launch.py"
+	
+DONE
