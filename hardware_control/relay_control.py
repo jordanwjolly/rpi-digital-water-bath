@@ -69,7 +69,6 @@ def enableRelay(relayID):
 
     # enable relay
     try:
-        print('')
         r = requests.get('http://192.168.0.100/outlet?' + str(relayID) + '=ON', auth=('admin', '1234'))
     except:
         return False
@@ -81,7 +80,6 @@ def disableRelay(relayID):
 
     # disable relay
     try:
-        print('')
         r = requests.get('http://192.168.0.100/outlet?' + str(relayID) + '=OFF', auth=('admin', '1234'))
 
     except:
