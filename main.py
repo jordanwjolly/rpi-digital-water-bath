@@ -11,6 +11,8 @@ import os
 import time
 import sys
 import signal
+import multiprocessing
+import numpy
 from software_control import controller
 from software_control import data_logging
 # from Hardware_control import WTI_control
@@ -78,7 +80,7 @@ def printCurrentState(
 
 
 # Main
-def main():
+def control_main(conn):
 
     # Registering Handler
     signal.signal(signal.SIGTERM, sigterm_handler)
@@ -110,6 +112,7 @@ def main():
     while (t < INITIALISE.RUNTIME):  # Uses secs, range time > with # of tanks
 
         current_time = time.time()  # for time step
+        current_temp = conn.recv()  # current temp
 
         print("\n#######################################################")
         print "Runtime: " + "{:.4f}".format(t) + " Secs"
@@ -121,7 +124,7 @@ def main():
                 continue
 
             # Updates current temperature
-            tank.Current_Temp = temp_sensor.current_temp(tank.Relay_ID)
+            tank.Current_Temp = current_temp[tank.Relay_ID-1] # minus 1
             tank.Set_Temp = config.equations(tank.Relay_ID, t)
 
             # Checks state, to see if state change required
@@ -200,6 +203,24 @@ def main():
 
         # Updates t based off most current time delta
         t = t + time_step(current_time)
+
+
+# Main
+def main():
+    # creating a pipe
+    parent_conn, child_conn = multiprocessing.Pipe()
+
+    # creating new processes
+    p1 = multiprocessing.Process(target=temp_sensor.temp_main, args=(parent_conn, INITIALISE.DUMMY))
+    p2 = multiprocessing.Process(target=control_main, args=(child_conn,))
+
+    # running processes
+    p1.start()
+    p2.start()
+
+    # wait until processes finish
+    p1.join()
+    p2.join()
 
 
 ####################################

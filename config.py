@@ -16,7 +16,7 @@ class initialisation_variables:
     COOLER_RECOVERY_TIME = 60  # seconds
     HEATER_RECOVERY_TIME = 60 * 60 * 48  # seconds
     SENSOR_AVRG = 3  # num of readings per sensor for avr
-    DUMMY = False  # can run on no RPi machine if True
+    DUMMY = True  # can run on no RPi machine if True
 
 
 # The Equations for our eight water tanks.

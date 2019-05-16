@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import requests
+#import requests
 import time
 
 
@@ -72,7 +72,8 @@ def enableRelay(relayID):
 
     # enable relay
     try:
-        r = requests.get('http://192.168.0.100/outlet?'+str(relayID) + '=ON',  auth=('admin', '1234'))     
+        print('')
+        #r = requests.get('http://192.168.0.100/outlet?'+str(relayID) + '=ON',  auth=('admin', '1234'))
     except:
         return False
 
@@ -84,7 +85,8 @@ def disableRelay(relayID):
 
     # disable relay
     try:
-        r = requests.get('http://192.168.0.100/outlet?'+str(relayID) + '=OFF',  auth=('admin', '1234'))     
+        print('')
+        #r = requests.get('http://192.168.0.100/outlet?'+str(relayID) + '=OFF',  auth=('admin', '1234'))
 
     except:
         return False
@@ -96,9 +98,9 @@ def checkState(relayID):
 
     headers = {'Accept': 'application/json', }
     auth = ('admin', '1234')
-
-    response = requests.get(
-        'https://192.168.0.100/restapi/relay/outlets/' +
-        str(relayID) + '/state/', headers=headers, verify=False, auth=auth)
+    print('')
+    #response = requests.get(
+     #   'https://192.168.0.100/restapi/relay/outlets/' +
+    #    str(relayID) + '/state/', headers=headers, verify=False, auth=auth)
 
     return response
