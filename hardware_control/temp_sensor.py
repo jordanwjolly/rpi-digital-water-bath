@@ -88,11 +88,11 @@ def write_current(temp):
 
 
 # ###MAIN CODE#########
-def temp_main(conn, DUMMY):
+def main(sensorVAL, DUMMY):
     # First try to get the device file
     print('Finding sensor device file...\n')
 
-    sensorVAL = np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float)
+    #sensorVAL = np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.float)
     #sensorVAL.fill(np.nan)
 
     if not DUMMY:
@@ -124,17 +124,20 @@ def temp_main(conn, DUMMY):
                 sensorVAL[index] = avg_temp
 
 
-        conn.send(sensorVAL)
-        print("Sent the message: {}".format(sensorVAL))
+        #conn.send(sensorVAL)
+        #print("Sent the message: {}".format(sensorVAL))
 
         # pickle.dump(sensorVAL, open(CURRENT_FILE, 'w'))
 
         if DUMMY:
-            sensorVAL=sensorVAL+[1, 1, 1, 1, 1, 1, 1, 1]
+            for i in range(len(sensorVAL)):
+                sensorVAL[i] = sensorVAL[i] + 1
+            time.sleep(3)
+
 
         time.sleep(READ_DELAY)
 
-    conn.close()
+    #conn.close()
 
 
 ####################################
