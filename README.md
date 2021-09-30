@@ -1,5 +1,10 @@
-SUMMARY
+THIS PROJECT WAS IMPLEMENTED TO SUPPORT THE RESEARCH FOUND IN THE PAPER BELOW
 
+
+Loughland I., Lau G.Y., Jolly J., and Seebacher F. (2019) The effect of the rate of thermal change on mitochondrial ROS production and subsequent oxidative damage.
+
+
+SUMMARY
 This is a basic bang-bang temperature controller used for maintaining desired temperatures in up to 8 seperate aquatic environments simultaneously.
 It can be used to both heat, and cool an environment based off a desired temperature profile curve.
 
